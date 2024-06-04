@@ -1,0 +1,11 @@
+@use '@angular/material' as mat;
+@include mat.form-field-density(-2.5);
+
+.mat-toolbar {
+  min-height: 50px !important;
+  height: 50px !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
