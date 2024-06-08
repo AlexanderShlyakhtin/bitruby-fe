@@ -20,7 +20,7 @@ export class AuthService extends BaseService {
   }
 
   /** Path part for operation `getTokenByUserPassword()` */
-  static readonly GetTokenByUserPasswordPath = '/auth/oauth2/token';
+  static readonly GetTokenByUserPasswordPath = '/oauth2/token';
 
   /**
    * Get access and refresh token by user password.

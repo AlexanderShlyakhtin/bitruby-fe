@@ -13,10 +13,6 @@ import { completeRegistration } from '../fn/users/complete-registration';
 import { CompleteRegistration$Params } from '../fn/users/complete-registration';
 import { registerUser } from '../fn/users/register-user';
 import { RegisterUser$Params } from '../fn/users/register-user';
-import { testAuth } from '../fn/users/test-auth';
-import { TestAuth$Params } from '../fn/users/test-auth';
-import { testPublic } from '../fn/users/test-public';
-import { TestPublic$Params } from '../fn/users/test-public';
 
 @Injectable({ providedIn: 'root' })
 export class UsersService extends BaseService {
@@ -58,7 +54,7 @@ export class UsersService extends BaseService {
   }
 
   /** Path part for operation `completeRegistration()` */
-  static readonly CompleteRegistrationPath = '/public/registration/complete-registration/{id}';
+  static readonly CompleteRegistrationPath = '/public/registration/complete-registration';
 
   /**
    * Complete registration of new user.
@@ -68,9 +64,9 @@ export class UsersService extends BaseService {
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `completeRegistration()` instead.
    *
-   * This method doesn't expect any request body.
+   * This method sends `application/json` and handles request body of type `application/json`.
    */
-  completeRegistration$Response(params: CompleteRegistration$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+  completeRegistration$Response(params?: CompleteRegistration$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
     return completeRegistration(this.http, this.rootUrl, params, context);
   }
 
@@ -82,76 +78,10 @@ export class UsersService extends BaseService {
    * This method provides access only to the response body.
    * To access the full response (for headers, for example), `completeRegistration$Response()` instead.
    *
-   * This method doesn't expect any request body.
+   * This method sends `application/json` and handles request body of type `application/json`.
    */
-  completeRegistration(params: CompleteRegistration$Params, context?: HttpContext): Observable<void> {
+  completeRegistration(params?: CompleteRegistration$Params, context?: HttpContext): Observable<void> {
     return this.completeRegistration$Response(params, context).pipe(
-      map((r: StrictHttpResponse<void>): void => r.body)
-    );
-  }
-
-  /** Path part for operation `testPublic()` */
-  static readonly TestPublicPath = '/public';
-
-  /**
-   * Test.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `testPublic()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  testPublic$Response(params?: TestPublic$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
-    return testPublic(this.http, this.rootUrl, params, context);
-  }
-
-  /**
-   * Test.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `testPublic$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  testPublic(params?: TestPublic$Params, context?: HttpContext): Observable<void> {
-    return this.testPublic$Response(params, context).pipe(
-      map((r: StrictHttpResponse<void>): void => r.body)
-    );
-  }
-
-  /** Path part for operation `testAuth()` */
-  static readonly TestAuthPath = '/secured';
-
-  /**
-   * Test.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `testAuth()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  testAuth$Response(params?: TestAuth$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
-    return testAuth(this.http, this.rootUrl, params, context);
-  }
-
-  /**
-   * Test.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `testAuth$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  testAuth(params?: TestAuth$Params, context?: HttpContext): Observable<void> {
-    return this.testAuth$Response(params, context).pipe(
       map((r: StrictHttpResponse<void>): void => r.body)
     );
   }

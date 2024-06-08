@@ -9,3 +9,17 @@
   align-items: center;
 }
 
+mat-form-field {
+  width: 100%;
+}
+
+.mdc-text-field--filled {
+  background-color: rgba(0, 0, 0, 0) !important;
+}
+
+.command-panel {
+  display: flex;
+  justify-content: center;
+}
+
+

@@ -6,13 +6,20 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
+import { OtpCode } from '../../models/otp-code';
 
-export interface TestPublic$Params {
+export interface GenerateOtpCodeForLogin$Params {
+  
+    /**
+     * Generate OTP token for user login
+     */
+    body?: OtpCode
 }
 
-export function testPublic(http: HttpClient, rootUrl: string, params?: TestPublic$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, testPublic.PATH, 'get');
+export function generateOtpCodeForLogin(http: HttpClient, rootUrl: string, params?: GenerateOtpCodeForLogin$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+  const rb = new RequestBuilder(rootUrl, generateOtpCodeForLogin.PATH, 'post');
   if (params) {
+    rb.body(params.body, 'application/json');
   }
 
   return http.request(
@@ -25,4 +32,4 @@ export function testPublic(http: HttpClient, rootUrl: string, params?: TestPubli
   );
 }
 
-testPublic.PATH = '/public';
+generateOtpCodeForLogin.PATH = '/public/generate-otp/login';

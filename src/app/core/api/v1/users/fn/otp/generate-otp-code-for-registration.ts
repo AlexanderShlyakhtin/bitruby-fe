@@ -6,18 +6,18 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { OtpCodeCheck } from '../../models/otp-code-check';
+import { OtpCode } from '../../models/otp-code';
 
-export interface CompleteRegistration$Params {
+export interface GenerateOtpCodeForRegistration$Params {
   
     /**
      * Generate OTP token for user login
      */
-    body?: OtpCodeCheck
+    body?: OtpCode
 }
 
-export function completeRegistration(http: HttpClient, rootUrl: string, params?: CompleteRegistration$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, completeRegistration.PATH, 'post');
+export function generateOtpCodeForRegistration(http: HttpClient, rootUrl: string, params?: GenerateOtpCodeForRegistration$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+  const rb = new RequestBuilder(rootUrl, generateOtpCodeForRegistration.PATH, 'post');
   if (params) {
     rb.body(params.body, 'application/json');
   }
@@ -32,4 +32,4 @@ export function completeRegistration(http: HttpClient, rootUrl: string, params?:
   );
 }
 
-completeRegistration.PATH = '/public/registration/complete-registration';
+generateOtpCodeForRegistration.PATH = '/public/generate-otp/registration';

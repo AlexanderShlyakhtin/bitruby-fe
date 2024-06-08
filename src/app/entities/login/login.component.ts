@@ -4,8 +4,11 @@ import {Router} from "@angular/router";
 import {MatButton} from "@angular/material/button";
 import {MatFormField, MatFormFieldModule, MatHint, MatSuffix} from "@angular/material/form-field";
 import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {NgIf} from "@angular/common";
+import {NgClass, NgIf, NgSwitch, NgSwitchCase} from "@angular/common";
 import {MatInput, MatInputModule} from "@angular/material/input";
+import {LoginByPhoneComponent} from "./login-options/login-by-phone.component";
+import {LoginByEmailComponent} from "./login-options/login-by-email.component";
+import {LoginByQrComponent} from "./login-options/login-by-qr.component";
 
 @Component({
     selector: 'bitruby-login',
@@ -18,116 +21,68 @@ import {MatInput, MatInputModule} from "@angular/material/input";
         MatFormFieldModule,
         MatInputModule,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        LoginByPhoneComponent,
+        LoginByEmailComponent,
+        NgClass,
+        LoginByQrComponent,
+        NgSwitch,
+        NgSwitchCase
     ],
     template: `
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-5">
-            Picture
-          </div>
-          <div class="col-md-7 login-form-bg">
-            <div class="login-form-container">
-              <div class="login-form">
-                <div class="row">
-                  <div class="col-md-3">
-                    <h5>{{ mapLabels['title'] }}</h5>
-                  </div>
-                  <div class="col-md-7"></div>
-                  <div class="col-md-1">
-                    <button mat-button (click)="goToLanding()">
-                      <mat-icon matIconSuffix>clear</mat-icon>
-                    </button>
-                  </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-5">
+                    Picture
                 </div>
-                <div class="row mt-2">
-                  <div class="col-md-2">
-                  </div>
-                  <div class="col-md-4">
-                    <button mat-button (click)="toggleLoginByPhone()">
-                      <div *ngIf="this.loginByPhone">
-                        <strong>
-                          {{ mapLabels['login-by-phone'] }}
-                        </strong>
-                      </div>
-                      <div *ngIf="this.loginByEmail">
-                        {{ mapLabels['login-by-phone'] }}
-                      </div>
-                    </button>
-                  </div>
-                  <div class="col-md-4">
-                    <button mat-button (click)="toggleLoginByEmail()">
-                      <div *ngIf="this.loginByEmail;">
-                        <strong>
-                          {{ mapLabels['login-by-email'] }}
-                        </strong>
-                      </div>
-                      <div *ngIf="this.loginByPhone">
-                        {{ mapLabels['login-by-email'] }}
-                      </div>
-                    </button>
-                  </div>
+                <div class="col-md-7 login-form-bg">
+                    <div class="login-close-button">
+                        <button mat-button (click)="goToLanding()">
+                            <mat-icon matIconSuffix>clear</mat-icon>
+                        </button>
+                    </div>
+                    <div class="login-form-container">
+                        <div class="login-form p-5">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <h5>{{ mapLabels['title'] }}</h5>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-12 text-start">
+                                    <button mat-button class="no-background" (click)="toggleLogin('phone')"
+                                            [ngClass]="{'bold': selectedLogin === 'phone'}">
+                                        {{ mapLabels['login-by-phone'] }}
+                                    </button>
+                                    <button mat-button class="no-background" (click)="toggleLogin('email')"
+                                            [ngClass]="{'bold': selectedLogin === 'email'}">
+                                        {{ mapLabels['login-by-email'] }}
+                                    </button>
+<!--                                    <button mat-button class="no-background" (click)="toggleLogin('qr')"-->
+<!--                                            [ngClass]="{'bold': selectedLogin === 'qr'}">-->
+<!--                                        {{ mapLabels['login-by-qr'] }}-->
+<!--                                    </button>-->
+                                </div>
+                            </div>
+                            <div [ngSwitch]="selectedLogin">
+                                <div *ngSwitchCase="'phone'">
+                                    <bitruby-login-by-phone></bitruby-login-by-phone>
+                                </div>
+                                <div *ngSwitchCase="'email'">
+                                    <bitruby-login-by-email></bitruby-login-by-email>
+                                </div>
+<!--                                <div *ngSwitchCase="'qr'">-->
+<!--                                    <bitruby-login-by-qr></bitruby-login-by-qr>-->
+<!--                                </div>-->
+                            </div>
+                        </div>
+                        <div class="button-container">
+                            <button class="w-100" mat-button (click)="goToRegistration()"><strong>У меня еще нет аккаунта</strong></button>
+                        </div>
+                    </div>
                 </div>
-
-                <div *ngIf="loginByPhone">
-                  <form [formGroup]="formByPhone">
-                    <div class="row mt-2">
-                      <div class="col-md-2">
-                        <mat-form-field appearance="fill">
-                          <input matInput formControlName="codeNumber">
-                        </mat-form-field>
-                      </div>
-                      <div class="col-md-8">
-                        <mat-form-field appearance="fill">
-                          <input matInput formControlName="number">
-                          <mat-hint>введите номер</mat-hint>
-                        </mat-form-field>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-10">
-                        <mat-form-field appearance="fill">
-                          <input matInput formControlName="password">
-                          <mat-error *ngIf="formByPhone.controls['password'].invalid">введите пароль
-                          </mat-error>
-                        </mat-form-field>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-                
-                <div *ngIf="formByEmail">
-                  <form [formGroup]="formByEmail">
-                    <div class="row mt-2">
-                      <div class="col-md-10">
-                        <mat-form-field appearance="fill">
-                          <input matInput formControlName="email">
-                          <mat-hint>введите email</mat-hint>
-                        </mat-form-field>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-10">
-                        <mat-form-field appearance="fill">
-                          <input matInput formControlName="password">
-                          <mat-error *ngIf="formByPhone.controls['password'].invalid">введите пароль
-                          </mat-error>
-                        </mat-form-field>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </div>
-              <div class="row">
-                <button mat-button>У меня еще нет аккаунта</button>
-              </div>
             </div>
-            
-          </div>
         </div>
-      </div>
-
-
     `,
     styles: [`
         .login-form-bg {
@@ -136,13 +91,21 @@ import {MatInput, MatInputModule} from "@angular/material/input";
             align-items: center;
             justify-content: center;
             height: 100vh; /* Full height to center vertically */
+            position: relative; /* Needed for positioning the close button */
         }
 
         .login-form-container {
             display: flex;
+            flex-direction: column; /* Align items vertically */
             justify-content: center;
             align-items: center;
             width: 100%;
+        }
+
+        .login-close-button {
+            position: absolute; /* Position close button absolutely within container */
+            top: 10px; /* Adjust as necessary */
+            right: 10px; /* Adjust as necessary */
         }
 
         .login-form {
@@ -153,8 +116,9 @@ import {MatInput, MatInputModule} from "@angular/material/input";
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        mat-form-field {
-          width: 100%;
+        .button-container {
+            margin-top: 10px; /* Add margin to create space between form and button */
+            text-align: center; /* Center the button */
         }
     `]
 })
@@ -163,43 +127,28 @@ export class LoginComponent {
     mapLabels = {
         title: 'Вход',
         'login-by-phone': 'по телефону',
-        'login-by-email': 'по email'
+        'login-by-email': 'по email',
+        'login-by-qr': 'по qr-коду'
     }
 
-    loginByPhone = true;
-    loginByEmail = false;
-    formByPhone!: FormGroup;
-    formByEmail!: FormGroup;
+    selectedLogin: 'phone' | 'email' | 'qr' = 'phone'; // Initial selected login
 
     constructor(
         private router: Router,
         private fb: FormBuilder,
         private cd: ChangeDetectorRef
     ) {
-        this.formByPhone = this.fb.group({
-            codeNumber: new FormControl(undefined, Validators.required),
-            number: new FormControl(undefined, Validators.required),
-            password: new FormControl(undefined, Validators.required),
-        });
-        this.formByEmail = this.fb.group({
-            email: new FormControl(undefined, [Validators.required, Validators.email]),
-            password: new FormControl(undefined, Validators.required),
-        });
     }
 
-    toggleLoginByPhone(): void {
-      this.loginByEmail = false;
-      this.loginByPhone = true;
-      this.cd.detectChanges()
-    }
-
-    toggleLoginByEmail(): void {
-        this.loginByEmail = true;
-        this.loginByPhone = false;
-        this.cd.detectChanges()
+    toggleLogin(type: 'phone' | 'email' | 'qr'): void {
+        this.selectedLogin = type;
     }
 
     goToLanding() {
         this.router.navigate(['/'])
+    }
+
+    goToRegistration() {
+        this.router.navigate(['/registration'])
     }
 }

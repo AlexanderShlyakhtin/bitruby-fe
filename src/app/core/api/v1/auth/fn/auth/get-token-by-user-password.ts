@@ -6,18 +6,20 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
+import { GrantType } from '../../models/grant-type';
 import { Token } from '../../models/token';
 
 export interface GetTokenByUserPassword$Params {
   
     /**
-     * Get token by username and password
+     * Get token by grant type and password
      */
     body?: {
-'grant_type': string;
+'grant_type': GrantType;
 'username': string;
 'password': string;
 'scope': string;
+'otp': string;
 }
 }
 
@@ -37,4 +39,4 @@ export function getTokenByUserPassword(http: HttpClient, rootUrl: string, params
   );
 }
 
-getTokenByUserPassword.PATH = '/auth/oauth2/token';
+getTokenByUserPassword.PATH = '/oauth2/token';

@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 
 import {environment} from "../../../../environments/environment.development";
-import {ApiModule} from "../../api/v1/auth/api.module";
+import {ApiModule} from "../../api/v1/users/api.module";
 
 
 @NgModule({

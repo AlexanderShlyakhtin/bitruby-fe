@@ -2,25 +2,30 @@ import {Component} from '@angular/core';
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatButton} from "@angular/material/button";
 import {Router} from "@angular/router";
+import {BigRedButtonComponent} from "../../shared/buttons/big-red-button.component";
 
 @Component({
   selector: 'bitruby-toolbar',
   standalone: true,
   imports: [
     MatToolbarModule,
-    MatButton
+    MatButton,
+    BigRedButtonComponent
   ],
   template: `
     <mat-toolbar>
       <div class="spacer"></div>
       <div class="button-container">
-        <button mat-raised-button color="accent">{{ mapLabel['button1'] }}</button>
-        <button mat-raised-button color="accent">{{ mapLabel['button2'] }}</button>
-        <button mat-raised-button color="accent">{{ mapLabel['button3'] }}</button>
-        <button mat-raised-button color="accent">{{ mapLabel['button4'] }}</button>
+        <button mat-flat-button>{{ mapLabel['button1'] }}</button>
+        <button mat-flat-button>{{ mapLabel['button2'] }}</button>
+        <button mat-flat-button>{{ mapLabel['button3'] }}</button>
+        <button mat-flat-button>{{ mapLabel['button4'] }}</button>
       </div>
       <span class="spacer"></span>
-      <button mat-flat-button color="warn" (click)="navigateToLogin()">{{ mapLabel['login'] }}</button>
+      <bitruby-big-red-button-component
+          [text]="mapLabel['login']"
+          (outputAction)="navigateToLogin()"
+      ></bitruby-big-red-button-component>
     </mat-toolbar>
   `,
   styles: [`

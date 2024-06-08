@@ -4,20 +4,21 @@ info:
   description: Swagger for auth service
   version: 1.0.0
 servers:
-  - url: /api/v1
+  - url: /auth/api/v1
     description: The URL prefix for API server
 tags:
   - name: auth
+  - name: otp
 
 paths:
-  /auth/oauth2/token:
+  /oauth2/token:
     post:
       summary: Get access and refresh token by user password
       operationId: getTokenByUserPassword
       tags:
         - auth
       security:
-        - BasicAuth: []
+        - basicAuth: []
       requestBody:
         $ref: '#/components/requestBodies/TokenRequest'
       responses:
@@ -29,6 +30,7 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   responses:
+
     Error:
       description: error
       content:
@@ -45,11 +47,10 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Token'
-
   requestBodies:
     TokenRequest:
       description: >-
-        Get token by username and password
+        Get token by grant type and password
       content:
         multipart/form-data:
           schema:
@@ -59,10 +60,10 @@ components:
               - username
               - password
               - scope
+              - otp
             properties:
               grant_type:
-                type: string
-                default: user_password
+                $ref: '#/components/schemas/GrantType'
               username:
                 type: string
               password:
@@ -70,10 +71,13 @@ components:
                 format: password
               scope:
                 type: string
+              otp:
+                type: string
   securitySchemes:
-    BasicAuth:
+    basicAuth:
       type: http
       scheme: basic
+      description: Use `user` / `passwd` as the test credentials
 
   schemas:
     Error:
@@ -93,6 +97,12 @@ components:
             type: string
             description: description
             example: example
+    GrantType:
+      type: string
+      enum:
+        - email_password
+        - phone_password
+      default: phone_password
     Token:
       type: object
       required:
