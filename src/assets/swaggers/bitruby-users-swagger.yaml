@@ -46,7 +46,7 @@ paths:
       tags:
         - otp
       requestBody:
-        $ref: '#/components/requestBodies/GenerateOtpCodeRequest'
+        $ref: '#/components/requestBodies/GenerateOtpCodeLoginRequest'
       responses:
         '200':
           $ref: '#/components/responses/EmptyResponse'
@@ -61,7 +61,7 @@ paths:
       tags:
         - otp
       requestBody:
-        $ref: '#/components/requestBodies/GenerateOtpCodeRequest'
+        $ref: '#/components/requestBodies/GenerateOtpCodeRegistrationRequest'
       responses:
         '200':
           $ref: '#/components/responses/EmptyResponse'
@@ -82,9 +82,16 @@ components:
         response with no body
 
   requestBodies:
-    GenerateOtpCodeRequest:
+    GenerateOtpCodeLoginRequest:
       description: >-
         Generate OTP token for user login
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OtpCodeLogin'
+    GenerateOtpCodeRegistrationRequest:
+      description: >-
+        Generate OTP token for user registration
       content:
         application/json:
           schema:
@@ -198,6 +205,18 @@ components:
             otp:
               $ref: '#/components/schemas/Otp'
         - $ref: '#/components/schemas/OtpCode'
+
+    OtpCodeLogin:
+      allOf:
+
+        - $ref: '#/components/schemas/OtpCode'
+        - type: object
+          required:
+            - password
+          properties:
+            password:
+              type: string
+              format: password
 
     OtpCode:
       type: object

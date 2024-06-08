@@ -10,8 +10,9 @@ import {LoginService} from "../services/login.service";
 import {OtpService} from "../../../core/api/v1/users/services/otp.service";
 import {GrantType} from "../../../core/api/v1/users/models/grant-type";
 import {OtpInputComponent} from "../../../shared/inputs/otp-input.component";
-import {SendToOtpCodeButtonComponent} from "../components/send-to-otp-code-button.component";
+import {SendToOtpCodeButtonComponent} from "../../../shared/components/send-to-otp-code-button.component";
 import {BigRedButtonComponent} from "../../../shared/buttons/big-red-button.component";
+import {PasswordInputComponent} from "../../../shared/inputs/password-input.component";
 
 @Component({
   selector: 'bitruby-login-by-email',
@@ -30,39 +31,40 @@ import {BigRedButtonComponent} from "../../../shared/buttons/big-red-button.comp
     NgClass,
     OtpInputComponent,
     SendToOtpCodeButtonComponent,
-    BigRedButtonComponent
+    BigRedButtonComponent,
+    PasswordInputComponent
   ],
   template: `
-    <form *ngIf="!tokenGenerated" [formGroup]="formByEmail">
+    <form *ngIf="!isTokenRequestSent" [formGroup]="formByEmail">
       <div class="row mt-2">
         <div class="col-md-12">
           <mat-form-field appearance="fill">
-            <input matInput formControlName="email" type="email">
+            <input matInput formControlName="email" type="email" placeholder="email">
             <mat-hint *ngIf="formByEmail.controls['email'].touched">введите email</mat-hint>
           </mat-form-field>
         </div>
       </div>
       <div class="row">
         <div class="col-md-12">
-          <mat-form-field appearance="fill">
-            <input matInput formControlName="password" type="password">
-            <mat-error *ngIf="formByEmail.controls['password'].invalid">введите пароль
-            </mat-error>
-          </mat-form-field>
+          <bitruby-mat-input-password
+              [formControl]="password"
+          ></bitruby-mat-input-password>
         </div>
       </div>
       <div class="row">
-        <bitruby-big-red-button-component 
-            [form]="formByEmail"
+        <bitruby-big-red-button-component
+            [diasble]="formByEmail.invalid"
             [text]="'Продолжить'"
             (outputAction)="generateOtpCode()"
         ></bitruby-big-red-button-component>
       </div>
     </form>
-    <div *ngIf="tokenGenerated">
+    <div *ngIf="isTokenRequestSent">
       <bitruby-send-to-otp-code-button
-      [text]="'Код отправлен на почту '+formByEmail.value['email']"
-      (buttonClicked)="returnToFormHandler($event)"
+          [text]="'Код отправлен на почту'"
+          [sendTo]="formByEmail.value['email']"
+          [type]="'email'"
+          (buttonClicked)="returnToFormHandler($event)"
       ></bitruby-send-to-otp-code-button>
       <div class="row mt-2">
         <bitruby-mat-input-otp
@@ -72,13 +74,13 @@ import {BigRedButtonComponent} from "../../../shared/buttons/big-red-button.comp
       </div>
       <div class="row">
         <bitruby-big-red-button-component
-            [form]="otpForm"
+            [diasble]="otpForm.invalid"
             [text]="'Войти'"
             (outputAction)="login()"
         ></bitruby-big-red-button-component>
       </div>
     </div>
-    
+
   `,
   styles: [``]
 })
@@ -86,7 +88,7 @@ export class LoginByEmailComponent {
 
   formByEmail!: FormGroup;
   pwdHide1 = true;
-  tokenGenerated = false;
+  isTokenRequestSent = false;
   otpForm!: FormGroup;
 
 
@@ -107,11 +109,12 @@ export class LoginByEmailComponent {
 
   generateOtpCode(): void {
     this.otpService.generateOtpCodeForLogin({body: {
+      password: this.formByEmail.value.password,
       grant_type: GrantType.EmailPassword,
       sendTo: this.formByEmail.value.email
     }}).subscribe({
       complete: () => {
-        this.tokenGenerated = true
+        this.isTokenRequestSent = true
       }
     })
   }
@@ -127,20 +130,11 @@ export class LoginByEmailComponent {
         arrayOtp.controls.map(control => control.value).join('')
     )
   }
-
-  getVisibility() {
-    return this.pwdHide1 ? 'visibility_off' : 'visibility';
-  }
-
-  visibilityToggle() {
-    this.pwdHide1 = !this.pwdHide1;
-  }
-
-  getIputType() {
-    return this.pwdHide1 ? 'password' : 'text';
-  }
-
   returnToFormHandler($event: void) {
-    this.tokenGenerated = false;
+    this.isTokenRequestSent = false;
+  }
+
+  get password(): FormControl {
+    return this.formByEmail.controls['password'] as FormControl;
   }
 }

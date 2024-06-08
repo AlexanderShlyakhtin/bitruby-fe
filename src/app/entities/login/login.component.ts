@@ -30,70 +30,41 @@ import {LoginByQrComponent} from "./login-options/login-by-qr.component";
         NgSwitchCase
     ],
     template: `
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-5">
-                    Picture
+        <div class="login-form-container">
+            <div class="login-form p-5">
+                <div class="row">
+                    <div class="col-md-3">
+                        <h5>{{ mapLabels['title'] }}</h5>
+                    </div>
                 </div>
-                <div class="col-md-7 login-form-bg">
-                    <div class="login-close-button">
-                        <button mat-button (click)="goToLanding()">
-                            <mat-icon matIconSuffix>clear</mat-icon>
+                <div class="row mt-2">
+                    <div class="col-md-12 text-start">
+                        <button mat-button class="no-background" (click)="toggleLogin('phone')"
+                                [ngClass]="{'bold': selectedLogin === 'phone'}">
+                            {{ mapLabels['login-by-phone'] }}
+                        </button>
+                        <button mat-button class="no-background" (click)="toggleLogin('email')"
+                                [ngClass]="{'bold': selectedLogin === 'email'}">
+                            {{ mapLabels['login-by-email'] }}
                         </button>
                     </div>
-                    <div class="login-form-container">
-                        <div class="login-form p-5">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <h5>{{ mapLabels['title'] }}</h5>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-md-12 text-start">
-                                    <button mat-button class="no-background" (click)="toggleLogin('phone')"
-                                            [ngClass]="{'bold': selectedLogin === 'phone'}">
-                                        {{ mapLabels['login-by-phone'] }}
-                                    </button>
-                                    <button mat-button class="no-background" (click)="toggleLogin('email')"
-                                            [ngClass]="{'bold': selectedLogin === 'email'}">
-                                        {{ mapLabels['login-by-email'] }}
-                                    </button>
-<!--                                    <button mat-button class="no-background" (click)="toggleLogin('qr')"-->
-<!--                                            [ngClass]="{'bold': selectedLogin === 'qr'}">-->
-<!--                                        {{ mapLabels['login-by-qr'] }}-->
-<!--                                    </button>-->
-                                </div>
-                            </div>
-                            <div [ngSwitch]="selectedLogin">
-                                <div *ngSwitchCase="'phone'">
-                                    <bitruby-login-by-phone></bitruby-login-by-phone>
-                                </div>
-                                <div *ngSwitchCase="'email'">
-                                    <bitruby-login-by-email></bitruby-login-by-email>
-                                </div>
-<!--                                <div *ngSwitchCase="'qr'">-->
-<!--                                    <bitruby-login-by-qr></bitruby-login-by-qr>-->
-<!--                                </div>-->
-                            </div>
-                        </div>
-                        <div class="button-container">
-                            <button class="w-100" mat-button (click)="goToRegistration()"><strong>У меня еще нет аккаунта</strong></button>
-                        </div>
+                </div>
+                <div [ngSwitch]="selectedLogin">
+                    <div *ngSwitchCase="'phone'">
+                        <bitruby-login-by-phone></bitruby-login-by-phone>
+                    </div>
+                    <div *ngSwitchCase="'email'">
+                        <bitruby-login-by-email></bitruby-login-by-email>
                     </div>
                 </div>
+            </div>
+            <div class="button-container">
+                <button class="w-100" mat-button (click)="goToRegistration()"><strong>{{ mapLabels['registration'] }}</strong></button>
             </div>
         </div>
     `,
     styles: [`
-        .login-form-bg {
-            background-color: #EEEFF2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh; /* Full height to center vertically */
-            position: relative; /* Needed for positioning the close button */
-        }
-
+        
         .login-form-container {
             display: flex;
             flex-direction: column; /* Align items vertically */
@@ -101,13 +72,7 @@ import {LoginByQrComponent} from "./login-options/login-by-qr.component";
             align-items: center;
             width: 100%;
         }
-
-        .login-close-button {
-            position: absolute; /* Position close button absolutely within container */
-            top: 10px; /* Adjust as necessary */
-            right: 10px; /* Adjust as necessary */
-        }
-
+        
         .login-form {
             width: 480px;
             height: 562px;
@@ -128,7 +93,7 @@ export class LoginComponent {
         title: 'Вход',
         'login-by-phone': 'по телефону',
         'login-by-email': 'по email',
-        'login-by-qr': 'по qr-коду'
+        'registration': 'У меня еще нет аккаунта'
     }
 
     selectedLogin: 'phone' | 'email' | 'qr' = 'phone'; // Initial selected login
@@ -140,12 +105,8 @@ export class LoginComponent {
     ) {
     }
 
-    toggleLogin(type: 'phone' | 'email' | 'qr'): void {
+    toggleLogin(type: 'phone' | 'email'): void {
         this.selectedLogin = type;
-    }
-
-    goToLanding() {
-        this.router.navigate(['/'])
     }
 
     goToRegistration() {

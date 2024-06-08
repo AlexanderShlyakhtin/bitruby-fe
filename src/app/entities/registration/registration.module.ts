@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {RouterModule} from "@angular/router";
 import {RegistrationComponent} from "./registration.component";
+import {routes} from "./registration.routes";
 
 
 
@@ -9,12 +10,7 @@ import {RegistrationComponent} from "./registration.component";
   declarations: [],
   imports: [
     CommonModule,
-      RouterModule.forChild([
-        {
-          path: '',
-          component: RegistrationComponent
-        }
-      ])
+      RouterModule.forChild(routes)
   ]
 })
 export class RegistrationModule { }

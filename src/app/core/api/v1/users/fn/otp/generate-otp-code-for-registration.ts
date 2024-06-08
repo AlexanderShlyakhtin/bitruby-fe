@@ -11,7 +11,7 @@ import { OtpCode } from '../../models/otp-code';
 export interface GenerateOtpCodeForRegistration$Params {
   
     /**
-     * Generate OTP token for user login
+     * Generate OTP token for user registration
      */
     body?: OtpCode
 }

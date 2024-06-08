@@ -6,7 +6,7 @@ import {FormGroup} from "@angular/forms";
     selector: 'bitruby-big-red-button-component',
     template: `
         <div class="command-panel">
-            <button mat-flat-button class="w-100" color="warn" [disabled]="form?.invalid"
+            <button mat-flat-button class="w-100" color="warn" [disabled]="diasble"
                     (click)="outputAction.emit()">{{ text }}
             </button>
         </div>`,
@@ -28,7 +28,7 @@ export class BigRedButtonComponent {
     outputAction: EventEmitter<void> = new EventEmitter<void>()
 
     @Input()
-    form: FormGroup | undefined;
+    diasble = false;
 
     @Input()
     text!: string

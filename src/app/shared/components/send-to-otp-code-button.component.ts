@@ -10,7 +10,10 @@ import {MatIcon} from "@angular/material/icon";
             <button class="ellipse-button" (click)="buttonClicked.emit()">
                 <mat-icon>arrow_back</mat-icon>
             </button>
-            <span class="button-text">{{ text }}</span>
+            <span class="button-text">
+                <p>{{ text }}</p>
+                <p>{{ sendTo }}</p>
+            </span>
         </div>
     `,
     imports: [
@@ -52,5 +55,11 @@ export class SendToOtpCodeButtonComponent {
 
     @Input()
     text!: string
+
+    @Input()
+    sendTo!: string
+
+    @Input()
+    type!: 'number' | 'email'
 
 }

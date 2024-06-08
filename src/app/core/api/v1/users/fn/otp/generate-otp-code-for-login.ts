@@ -6,14 +6,14 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { OtpCode } from '../../models/otp-code';
+import { OtpCodeLogin } from '../../models/otp-code-login';
 
 export interface GenerateOtpCodeForLogin$Params {
   
     /**
      * Generate OTP token for user login
      */
-    body?: OtpCode
+    body?: OtpCodeLogin
 }
 
 export function generateOtpCodeForLogin(http: HttpClient, rootUrl: string, params?: GenerateOtpCodeForLogin$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
