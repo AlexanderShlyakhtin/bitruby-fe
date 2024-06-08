@@ -37,7 +37,7 @@ import {LoginByQrComponent} from "./login-options/login-by-qr.component";
                         <h5>{{ mapLabels['title'] }}</h5>
                     </div>
                 </div>
-                <div class="row mt-2">
+                <div class="row mt-2" *ngIf="showSelectOptionsPanel">
                     <div class="col-md-12 text-start">
                         <button mat-button class="no-background" (click)="toggleLogin('phone')"
                                 [ngClass]="{'bold': selectedLogin === 'phone'}">
@@ -51,10 +51,14 @@ import {LoginByQrComponent} from "./login-options/login-by-qr.component";
                 </div>
                 <div [ngSwitch]="selectedLogin">
                     <div *ngSwitchCase="'phone'">
-                        <bitruby-login-by-phone></bitruby-login-by-phone>
+                        <bitruby-login-by-phone
+                                (otpCodeRequested)="toggleSelectOptionPanel($event)"
+                        ></bitruby-login-by-phone>
                     </div>
                     <div *ngSwitchCase="'email'">
-                        <bitruby-login-by-email></bitruby-login-by-email>
+                        <bitruby-login-by-email
+                                (otpCodeRequested)="toggleSelectOptionPanel($event)"
+                        ></bitruby-login-by-email>
                     </div>
                 </div>
             </div>
@@ -96,6 +100,7 @@ export class LoginComponent {
         'registration': 'У меня еще нет аккаунта'
     }
 
+    showSelectOptionsPanel = true;
     selectedLogin: 'phone' | 'email' | 'qr' = 'phone'; // Initial selected login
 
     constructor(
@@ -111,5 +116,10 @@ export class LoginComponent {
 
     goToRegistration() {
         this.router.navigate(['/registration'])
+    }
+
+    toggleSelectOptionPanel(event: boolean) {
+        this.showSelectOptionsPanel = event;
+
     }
 }

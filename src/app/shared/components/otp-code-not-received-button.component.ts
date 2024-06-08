@@ -1,44 +1,43 @@
 import {Component, EventEmitter, Input, Output} from "@angular/core";
 import {MatIcon} from "@angular/material/icon";
+import {MatPrefix} from "@angular/material/form-field";
 
 
 @Component({
-    selector: 'bitruby-send-to-otp-code-button',
+    selector: 'bitruby-otp-code-not-received-button',
     standalone: true,
     template: `
-        <div class="custom-button-container">
-            <button class="ellipse-button" (click)="buttonClicked.emit()">
-                <mat-icon>arrow_back</mat-icon>
-            </button>
-            <span class="button-text">
+        <div class="otp-code-not-received-button-container">
+            <button (click)="buttonClicked.emit()" class="otp-code-not-received-button"  >
+                <mat-icon matPrefix>info</mat-icon>
+                <span class="button-text">
                 <p>{{ text }}</p>
-                <p>{{ sendTo }}</p>
             </span>
+                
+            </button>
+            
         </div>
     `,
     imports: [
-        MatIcon
+        MatIcon,
+        MatPrefix
     ],
     styles: [`
-        .custom-button-container {
+        .otp-code-not-received-button-container {
             display: flex;
             align-items: center;
         }
 
-        .ellipse-button {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+        .otp-code-not-received-button {
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #f0f0f0;
             border: none;
             cursor: pointer;
             margin-right: 10px; /* Adjust as needed to space the text */
         }
 
-        .ellipse-button mat-icon {
+        .otp-code-not-received-button mat-icon {
             color: #000000; /* Change arrow color if needed */
         }
 
@@ -46,24 +45,17 @@ import {MatIcon} from "@angular/material/icon";
             font-size: 16px; /* Adjust font size as needed */
             color: #000000; /* Change text color if needed */
         }
-
+        
         :host p {
             margin-bottom: 0;
         }
     `]
 })
-export class SendToOtpCodeButtonComponent {
+export class OtpCodeNotReceivedButtonComponent {
 
     @Output() buttonClicked: EventEmitter<void> = new EventEmitter<void>();
 
-
     @Input()
     text!: string
-
-    @Input()
-    sendTo!: string
-
-    @Input()
-    type!: 'number' | 'email'
 
 }

@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, ElementRef, QueryList, ViewChildren} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} from '@angular/core';
 import {Router} from "@angular/router";
 import {FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatError, MatFormField, MatHint} from "@angular/material/form-field";
@@ -13,6 +13,9 @@ import {OtpInputComponent} from "../../../shared/inputs/otp-input.component";
 import {SendToOtpCodeButtonComponent} from "../../../shared/components/send-to-otp-code-button.component";
 import {BigRedButtonComponent} from "../../../shared/buttons/big-red-button.component";
 import {PasswordInputComponent} from "../../../shared/inputs/password-input.component";
+import {interval, Subscription} from "rxjs";
+import {ResendOtpCodeTimeCounterComponent} from "../../../shared/components/resend-otp-code-time-counter.component";
+import {OtpCodeNotReceivedButtonComponent} from "../../../shared/components/otp-code-not-received-button.component";
 
 @Component({
   selector: 'bitruby-login-by-email',
@@ -32,7 +35,9 @@ import {PasswordInputComponent} from "../../../shared/inputs/password-input.comp
     OtpInputComponent,
     SendToOtpCodeButtonComponent,
     BigRedButtonComponent,
-    PasswordInputComponent
+    PasswordInputComponent,
+    ResendOtpCodeTimeCounterComponent,
+    OtpCodeNotReceivedButtonComponent
   ],
   template: `
     <form *ngIf="!isTokenRequestSent" [formGroup]="formByEmail">
@@ -70,14 +75,19 @@ import {PasswordInputComponent} from "../../../shared/inputs/password-input.comp
         <bitruby-mat-input-otp
             [form]="otpForm"
             [title]="'Введите код из письма'"
+            (otpCompleted)="login()"
         ></bitruby-mat-input-otp>
       </div>
       <div class="row">
-        <bitruby-big-red-button-component
-            [diasble]="otpForm.invalid"
-            [text]="'Войти'"
-            (outputAction)="login()"
-        ></bitruby-big-red-button-component>
+        <bitruby-resend-otp-code-time-counter
+            (buttonClicked)="generateOtpCode()"
+        ></bitruby-resend-otp-code-time-counter>
+      </div>
+      <div class="row mt-4">
+        <bitruby-otp-code-not-received-button
+            [text]="'Код не пришел'"
+        >
+        </bitruby-otp-code-not-received-button>
       </div>
     </div>
 
@@ -87,10 +97,11 @@ import {PasswordInputComponent} from "../../../shared/inputs/password-input.comp
 export class LoginByEmailComponent {
 
   formByEmail!: FormGroup;
-  pwdHide1 = true;
   isTokenRequestSent = false;
   otpForm!: FormGroup;
 
+  @Output()
+  otpCodeRequested: EventEmitter<boolean> = new EventEmitter<boolean>()
 
   constructor(
       private router: Router,
@@ -100,25 +111,28 @@ export class LoginByEmailComponent {
       private otpService: OtpService
   ) {
     this.formByEmail = this.fb.group({
-      email: new FormControl(undefined,  [Validators.required, Validators.email]),
+      email: new FormControl(undefined, [Validators.required, Validators.email]),
       password: new FormControl(undefined, Validators.required),
     });
-    this.otpForm =this.fb.group([])
+    this.otpForm = this.fb.group([])
   }
 
 
   generateOtpCode(): void {
-    this.otpService.generateOtpCodeForLogin({body: {
-      password: this.formByEmail.value.password,
-      grant_type: GrantType.EmailPassword,
-      sendTo: this.formByEmail.value.email
-    }}).subscribe({
+    this.otpService.generateOtpCodeForLogin({
+      body: {
+        password: this.formByEmail.value.password,
+        grant_type: GrantType.EmailPassword,
+        sendTo: this.formByEmail.value.email
+      }
+    }).subscribe({
       complete: () => {
         this.isTokenRequestSent = true
+        this.otpCodeRequested.emit(false)
+
       }
     })
   }
-
 
   login() {
     const arrayOtp = this.otpForm.controls['otp'] as FormArray<FormControl>
@@ -129,9 +143,13 @@ export class LoginByEmailComponent {
         GrantType.EmailPassword,
         arrayOtp.controls.map(control => control.value).join('')
     )
+
   }
+
   returnToFormHandler($event: void) {
     this.isTokenRequestSent = false;
+    this.otpCodeRequested.emit(true)
+
   }
 
   get password(): FormControl {

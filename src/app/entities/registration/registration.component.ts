@@ -39,7 +39,7 @@ import {RegisterByEmailComponent} from "./registration-options/register-by-email
                         <h5>{{ mapLabels['title'] }}</h5>
                     </div>
                 </div>
-                <div class="row mt-2">
+                <div class="row mt-2" *ngIf="showSelectOptionsPanel">
                     <div class="col-md-12 text-start">
 <!--                        <button mat-button class="no-background" (click)="toggleLogin('phone')"-->
 <!--                                [ngClass]="{'bold': selectedLogin === 'phone'}">-->
@@ -60,7 +60,9 @@ import {RegisterByEmailComponent} from "./registration-options/register-by-email
 <!--                        <bitruby-login-by-phone></bitruby-login-by-phone>-->
 <!--                    </div>-->
                     <div *ngSwitchCase="'email'">
-                        <bitruby-registration-by-email></bitruby-registration-by-email>
+                        <bitruby-registration-by-email 
+                            (otpCodeRequested)="toggleSelectOptionPanel($event)"
+                        ></bitruby-registration-by-email>
                     </div>
                     <!--                                <div *ngSwitchCase="'qr'">-->
                     <!--                                    <bitruby-login-by-qr></bitruby-login-by-qr>-->
@@ -106,6 +108,8 @@ export class RegistrationComponent {
     // 'login-by-qr': 'по qr-коду'
   }
 
+  showSelectOptionsPanel = true;
+
   selectedRegistration = 'email'; // Initial selected login
 
   constructor(
@@ -123,4 +127,8 @@ export class RegistrationComponent {
     this.router.navigate(['/login'])
   }
 
+  toggleSelectOptionPanel(event: boolean) {
+    this.showSelectOptionsPanel = event;
+
+  }
 }

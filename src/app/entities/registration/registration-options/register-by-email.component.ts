@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Output} from '@angular/core';
 import {Router} from "@angular/router";
 import {FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatError, MatFormField, MatHint} from "@angular/material/form-field";
@@ -14,6 +14,8 @@ import {SendToOtpCodeButtonComponent} from '../../../shared/components/send-to-o
 import {RegistrationService} from "../services/registration.service";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {PasswordInputComponent} from "../../../shared/inputs/password-input.component";
+import {ResendOtpCodeTimeCounterComponent} from "../../../shared/components/resend-otp-code-time-counter.component";
+import {OtpCodeNotReceivedButtonComponent} from "../../../shared/components/otp-code-not-received-button.component";
 
 @Component({
     selector: 'bitruby-registration-by-email',
@@ -36,6 +38,8 @@ import {PasswordInputComponent} from "../../../shared/inputs/password-input.comp
         MatCheckboxModule,
         MatIconButton,
         PasswordInputComponent,
+        ResendOtpCodeTimeCounterComponent,
+        OtpCodeNotReceivedButtonComponent,
     ],
     template: `
         <form *ngIf="!isTokenRequestSent" [formGroup]="formByEmail">
@@ -88,14 +92,19 @@ import {PasswordInputComponent} from "../../../shared/inputs/password-input.comp
                 <bitruby-mat-input-otp
                         [form]="otpForm"
                         [title]="'Введите код из письма'"
+                        (otpCompleted)="completeRegistration()"
                 ></bitruby-mat-input-otp>
             </div>
             <div class="row">
-                <bitruby-big-red-button-component
-                        [diasble]="otpForm.invalid"
-                        [text]="'Войти'"
-                        (outputAction)="completeRegistration()"
-                ></bitruby-big-red-button-component>
+                <bitruby-resend-otp-code-time-counter
+                        (buttonClicked)="generateOtpCode()"
+                ></bitruby-resend-otp-code-time-counter>
+            </div>
+            <div class="row mt-4">
+                <bitruby-otp-code-not-received-button
+                        [text]="'Код не пришел'"
+                >
+                </bitruby-otp-code-not-received-button>
             </div>
         </div>
     `,
@@ -117,6 +126,9 @@ export class RegisterByEmailComponent {
     otpForm: FormGroup;
     checked = false;
 
+    @Output()
+    otpCodeRequested: EventEmitter<boolean> = new EventEmitter<boolean>()
+
     constructor(
         private router: Router,
         private fb: FormBuilder,
@@ -129,9 +141,7 @@ export class RegisterByEmailComponent {
             password: new FormControl(undefined, Validators.required),
             consentTerms: new FormControl(undefined, Validators.required)
         });
-        this.otpForm = this.fb.group({
-            otp: this.fb.array(Array(6).fill(new FormControl('', Validators.required)))
-        });
+        this.otpForm = this.fb.group([])
     }
 
     generateOtpCode(): void {
@@ -144,6 +154,7 @@ export class RegisterByEmailComponent {
             .subscribe({
                 complete: () => {
                     this.isTokenRequestSent = true;
+                    this.otpCodeRequested.emit(false)
                 },
                 error: err => {
                     console.error(err);
@@ -153,6 +164,7 @@ export class RegisterByEmailComponent {
 
     returnToFormHandler($event: void): void {
         this.isTokenRequestSent = false;
+        this.otpCodeRequested.emit(true)
     }
 
     registerNewUser(): void {
@@ -174,13 +186,12 @@ export class RegisterByEmailComponent {
     }
 
     completeRegistration(): void {
-        const arrayOtp = this.otpForm.controls['otp'] as FormArray;
-        const otpValue = arrayOtp.controls.map(control => control.value).join('');
+        const arrayOtp = this.otpForm.controls['otp'] as FormArray<FormControl>
 
         this.registrationService.completeRegistration({
             sendTo: this.formByEmail.value.email,
             grant_type: GrantType.EmailPassword,
-            otp: otpValue
+            otp: arrayOtp.controls.map(control => control.value).join('')
         })
             .subscribe({
                 complete: () => {

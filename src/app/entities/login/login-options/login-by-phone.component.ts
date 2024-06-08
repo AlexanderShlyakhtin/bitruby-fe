@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Output} from '@angular/core';
 import {MatError, MatFormField, MatHint} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {NgForOf, NgIf} from "@angular/common";
@@ -13,6 +13,9 @@ import {OtpService} from "../../../core/api/v1/users/services/otp.service";
 import {SendToOtpCodeButtonComponent} from "../../../shared/components/send-to-otp-code-button.component";
 import {BigRedButtonComponent} from "../../../shared/buttons/big-red-button.component";
 import {PasswordInputComponent} from "../../../shared/inputs/password-input.component";
+import {ResendOtpCodeTimeCounterComponent} from "../../../shared/components/resend-otp-code-time-counter.component";
+import {OtpCodeNotReceivedButtonComponent} from "../../../shared/components/otp-code-not-received-button.component";
+import {OtpInputComponent} from "../../../shared/inputs/otp-input.component";
 
 @Component({
   selector: 'bitruby-login-by-phone',
@@ -30,7 +33,10 @@ import {PasswordInputComponent} from "../../../shared/inputs/password-input.comp
     NgForOf,
     SendToOtpCodeButtonComponent,
     BigRedButtonComponent,
-    PasswordInputComponent
+    PasswordInputComponent,
+    ResendOtpCodeTimeCounterComponent,
+    OtpCodeNotReceivedButtonComponent,
+    OtpInputComponent
   ],
   template: `
     <form *ngIf="!isTokenRequestSent" [formGroup]="formByPhone">
@@ -74,23 +80,25 @@ import {PasswordInputComponent} from "../../../shared/inputs/password-input.comp
             [type]="'number'"
             (buttonClicked)="returnToFormHandler($event)"
         >
-
         </bitruby-send-to-otp-code-button>
       </div>
       <div class="row mt-2">
-        <div class="col-md-12">
-          <mat-form-field appearance="fill">
-            <input matInput formControlName="otp">
-            <mat-hint *ngIf="otpForm.controls['otp'].touched">введите OTP код</mat-hint>
-          </mat-form-field>
-        </div>
+        <bitruby-mat-input-otp
+            [form]="otpForm"
+            [title]="'Введите код из письма'"
+            (otpCompleted)="login()"
+        ></bitruby-mat-input-otp>
       </div>
       <div class="row">
-        <bitruby-big-red-button-component
-            [diasble]="otpForm.invalid"
-            [text]="'Войти'"
-            (outputAction)="login()"
-        ></bitruby-big-red-button-component>
+        <bitruby-resend-otp-code-time-counter
+            (buttonClicked)="generateOtpCode()"
+        ></bitruby-resend-otp-code-time-counter>
+      </div>
+      <div class="row mt-4">
+        <bitruby-otp-code-not-received-button
+            [text]="'СМС-код не пришел'"
+        >
+        </bitruby-otp-code-not-received-button>
       </div>
     </form>
   `,
@@ -101,6 +109,9 @@ export class LoginByPhoneComponent {
   formByPhone!: FormGroup;
   otpForm!: FormGroup;
   isTokenRequestSent = false;
+
+  @Output()
+  otpCodeRequested: EventEmitter<boolean> = new EventEmitter<boolean>()
 
   countryCodes: CountryCode[] = [
     {
@@ -125,23 +136,21 @@ export class LoginByPhoneComponent {
       number: new FormControl(undefined, Validators.required),
       password: new FormControl(undefined, Validators.required),
     });
-    this.otpForm = this.fb.group({
-      otp: new FormControl(undefined, Validators.required)
-    })
+    this.otpForm = this.fb.group([])
   }
 
   login() {
     const arrayOtp = this.otpForm.controls['otp'] as FormArray<FormControl>
     this.loginService.login(
-        this.formByPhone.value.countryCode + this.formByPhone.value.number,
+        this.formByPhone.value.countryCode + this.formByPhone.value.number.replace(/[^+\d]/g, ''),
         this.formByPhone.value.password,
         GrantType.PhonePassword,
         arrayOtp.controls.map(control => control.value).join('')
-        )
+    )
   }
 
   generateOtpCode(): void {
-    const number = (this.formByPhone.value.number as string).replace("(", "").replace(")", "").replace("*", "").replace(" ", "").replace("-", "")
+    const number = this.formByPhone.value.number.replace(/[^+\d]/g, '');
 
     this.otpService.generateOtpCodeForLogin({body: {
         password: this.formByPhone.value.password,
@@ -150,17 +159,20 @@ export class LoginByPhoneComponent {
       }}).subscribe({
       next: value => {
         this.isTokenRequestSent = true;
+        this.otpCodeRequested.emit(false)
       }
     })
   }
 
   returnToFormHandler($event: void) {
     this.isTokenRequestSent = false;
+    this.otpCodeRequested.emit(true)
   }
 
   get password(): FormControl {
     return this.formByPhone.controls['password'] as FormControl;
   }
+
 }
 
 interface CountryCode {

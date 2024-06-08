@@ -1,4 +1,14 @@
-import {Component, ElementRef, input, Input, OnInit, QueryList, ViewChildren} from "@angular/core";
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    input,
+    Input,
+    OnInit,
+    Output,
+    QueryList,
+    ViewChildren
+} from "@angular/core";
 import {FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgClass, NgForOf} from "@angular/common";
 import {MatFormField, MatFormFieldModule} from "@angular/material/form-field";
@@ -70,6 +80,8 @@ export class OtpInputComponent implements OnInit {
 
     @ViewChildren('otpInput') otpInputs!: QueryList<ElementRef>;
 
+    @Output()
+    otpCompleted: EventEmitter<void> = new EventEmitter<void>();
 
     constructor(
         private fb: FormBuilder
@@ -79,8 +91,6 @@ export class OtpInputComponent implements OnInit {
     ngOnInit(): void {
         this.form.addControl('otp', this.fb.array(this.createOtpControls()))
     }
-
-
 
     createOtpControls(): FormControl[] {
         return Array(6).fill('').map(() => new FormControl('', [Validators.required, Validators.pattern(PATTERN_ONY_NUMBERS)]));
@@ -93,6 +103,9 @@ export class OtpInputComponent implements OnInit {
             if (nextInput) {
                 nextInput.focus();
             }
+        }
+        if (this.isOtpComplete() && this.form.valid) {
+            this.otpCompleted.emit();
         }
     }
 
@@ -116,7 +129,15 @@ export class OtpInputComponent implements OnInit {
             if (nextInput) {
                 nextInput.focus();
             }
+
+            if (this.isOtpComplete() && this.form.valid) {
+                this.otpCompleted.emit();
+            }
         }
+    }
+
+    isOtpComplete(): boolean {
+        return this.otpControls.controls.every(control => control.value.length === 1);
     }
 
 
