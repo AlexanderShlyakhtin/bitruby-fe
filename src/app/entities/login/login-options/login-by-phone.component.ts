@@ -16,6 +16,7 @@ import {PasswordInputComponent} from "../../../shared/inputs/password-input.comp
 import {ResendOtpCodeTimeCounterComponent} from "../../../shared/components/resend-otp-code-time-counter.component";
 import {OtpCodeNotReceivedButtonComponent} from "../../../shared/components/otp-code-not-received-button.component";
 import {OtpInputComponent} from "../../../shared/inputs/otp-input.component";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'bitruby-login-by-phone',
@@ -52,7 +53,7 @@ import {OtpInputComponent} from "../../../shared/inputs/otp-input.component";
         </div>
         <div class="col-md-9">
           <mat-form-field appearance="fill">
-            <input matInput formControlName="number" appPhoneMask placeholder="phone number">
+            <input matInput formControlName="number" appPhoneInputMask placeholder="phone number">
             <mat-hint *ngIf="formByPhone.controls['number'].touched">введите номер телефона</mat-hint>
           </mat-form-field>
         </div>
@@ -129,7 +130,9 @@ export class LoginByPhoneComponent {
       private fb: FormBuilder,
       private cd: ChangeDetectorRef,
       private loginService: LoginService,
-      private otpService: OtpService
+      private otpService: OtpService,
+      private _snackBar: MatSnackBar
+
   ) {
     this.formByPhone = this.fb.group({
       countryCode: new FormControl(this.countryCodes.at(0)?.dialCode, Validators.required),
@@ -157,9 +160,12 @@ export class LoginByPhoneComponent {
         grant_type: GrantType.PhonePassword,
         sendTo: this.formByPhone.value.countryCode + number
       }}).subscribe({
-      next: value => {
+      complete: () => {
         this.isTokenRequestSent = true;
         this.otpCodeRequested.emit(false)
+      },
+      error: err => {
+        this._snackBar.open(err.message, 'Close', {verticalPosition: 'top', direction: 'ltr', horizontalPosition: 'right'})
       }
     })
   }

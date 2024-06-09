@@ -2,9 +2,9 @@ import {Directive, HostListener} from "@angular/core";
 import {NgControl} from "@angular/forms";
 
 @Directive({
-  selector: '[formControlName][appPhoneMask]',
+  selector: '[formControlName][appPhoneInputMask]',
 })
-export class PhoneMaskDirective {
+export class PhoneInputMaskDirective {
 
   constructor(public ngControl: NgControl) { }
 

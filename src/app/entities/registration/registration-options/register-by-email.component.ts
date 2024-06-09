@@ -16,6 +16,8 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
 import {PasswordInputComponent} from "../../../shared/inputs/password-input.component";
 import {ResendOtpCodeTimeCounterComponent} from "../../../shared/components/resend-otp-code-time-counter.component";
 import {OtpCodeNotReceivedButtonComponent} from "../../../shared/components/otp-code-not-received-button.component";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {right} from "@popperjs/core";
 
 @Component({
     selector: 'bitruby-registration-by-email',
@@ -133,6 +135,7 @@ export class RegisterByEmailComponent {
         private router: Router,
         private fb: FormBuilder,
         private cd: ChangeDetectorRef,
+        private _snackBar: MatSnackBar,
         private registrationService: RegistrationService,
         private otpService: OtpService
     ) {
@@ -178,6 +181,7 @@ export class RegisterByEmailComponent {
                 },
                 error: err => {
                     console.error(err);
+                    this._snackBar.open(err.message, 'Close', {verticalPosition: 'top', direction: 'rtl'})
                 }
             });
     }

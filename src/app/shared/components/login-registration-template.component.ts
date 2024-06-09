@@ -4,6 +4,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {Router, RouterOutlet} from "@angular/router";
 import {MatSuffix} from "@angular/material/form-field";
 import {MatIconModule} from "@angular/material/icon";
+import {SharedModule} from "../shared.module";
 
 @Component({
     selector: 'bitruby-login-registration-template',
@@ -12,13 +13,15 @@ import {MatIconModule} from "@angular/material/icon";
         MatButton,
         RouterOutlet,
         MatSuffix,
-        MatIconModule
+        MatIconModule,
+        SharedModule
     ],
     template: `
+        <bitruby-logo></bitruby-logo>
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-5">
-                    Picture
+                <div class="col-md-5 bitruby-big-logo-image">
+                    <img src="assets/content/images/img.png" alt="App Big Logo">
                 </div>
                 <div class="col-md-7 login-form-bg">
                     <div class="login-close-button">
@@ -32,6 +35,11 @@ import {MatIconModule} from "@angular/material/icon";
         </div>
     `,
     styles: [`
+        .bitruby-big-logo-image {
+            justify-content: center;
+            align-content: center;
+            background: #4C1C67;
+        }
         .login-form-bg {
             background-color: #EEEFF2;
             display: flex;

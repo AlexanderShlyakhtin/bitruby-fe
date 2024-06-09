@@ -5,27 +5,16 @@ import {Component} from '@angular/core';
   standalone: true,
   imports: [],
   template: `
-    <div class="row">
-      <div class="col-md-3">
-        Landing
-      </div>
-      <div class="col-md-3">
-        Landing
-      </div>
-      <div class="col-md-3">
-        Landing
-      </div>
-      <div class="col-md-3">
-        Landing
-      </div>
-      
+    
+    <div class="bitruby-landing">
+      Landing
     </div>
-    <p>Landing</p>
-    <p>Landing</p>
-    <p>Landing</p>
-    <p>Landing</p>
+    
   `,
-  styles: [``]
+  styles: [`
+    .bitruby-landing {
+    }
+  `]
 })
 export class LandingComponent {
 

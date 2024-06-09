@@ -1,5 +1,7 @@
 import {Component, EventEmitter, Input, Output} from "@angular/core";
 import {MatIcon} from "@angular/material/icon";
+import {PipeModule} from "../pipe/pipe.module";
+import {NgIf} from "@angular/common";
 
 
 @Component({
@@ -12,12 +14,15 @@ import {MatIcon} from "@angular/material/icon";
             </button>
             <span class="button-text">
                 <p>{{ text }}</p>
-                <p>{{ sendTo }}</p>
+                <div *ngIf="type === 'number'">{{ sendTo | phoneMaskPipe }}</div>
+                <div *ngIf="type === 'email'">{{ sendTo | emailMaskDisplay }}</div>
             </span>
         </div>
     `,
     imports: [
-        MatIcon
+        MatIcon,
+        PipeModule,
+        NgIf
     ],
     styles: [`
         .custom-button-container {

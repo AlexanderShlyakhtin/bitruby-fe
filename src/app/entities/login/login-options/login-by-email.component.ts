@@ -16,6 +16,7 @@ import {PasswordInputComponent} from "../../../shared/inputs/password-input.comp
 import {interval, Subscription} from "rxjs";
 import {ResendOtpCodeTimeCounterComponent} from "../../../shared/components/resend-otp-code-time-counter.component";
 import {OtpCodeNotReceivedButtonComponent} from "../../../shared/components/otp-code-not-received-button.component";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'bitruby-login-by-email',
@@ -108,7 +109,8 @@ export class LoginByEmailComponent {
       private fb: FormBuilder,
       private cd: ChangeDetectorRef,
       private loginService: LoginService,
-      private otpService: OtpService
+      private otpService: OtpService,
+      private _snackBar: MatSnackBar
   ) {
     this.formByEmail = this.fb.group({
       email: new FormControl(undefined, [Validators.required, Validators.email]),
@@ -129,6 +131,9 @@ export class LoginByEmailComponent {
       complete: () => {
         this.isTokenRequestSent = true
         this.otpCodeRequested.emit(false)
+      },
+      error: err => {
+        this._snackBar.open(err.message, 'Close', {verticalPosition: 'top', direction: 'rtl'})
 
       }
     })
@@ -136,7 +141,6 @@ export class LoginByEmailComponent {
 
   login() {
     const arrayOtp = this.otpForm.controls['otp'] as FormArray<FormControl>
-
     this.loginService.login(
         this.formByEmail.value.email,
         this.formByEmail.value.password,

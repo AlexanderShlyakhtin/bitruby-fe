@@ -13,13 +13,13 @@ import {BigRedButtonComponent} from "../../shared/buttons/big-red-button.compone
     BigRedButtonComponent
   ],
   template: `
-    <mat-toolbar>
+    <mat-toolbar style="background: #4C1C67;">
       <div class="spacer"></div>
       <div class="button-container">
-        <button mat-flat-button>{{ mapLabel['button1'] }}</button>
-        <button mat-flat-button>{{ mapLabel['button2'] }}</button>
-        <button mat-flat-button>{{ mapLabel['button3'] }}</button>
-        <button mat-flat-button>{{ mapLabel['button4'] }}</button>
+        <button mat-button style="color: white">{{ mapLabel['button1'] }}</button>
+        <button mat-button style="color: white">{{ mapLabel['button2'] }}</button>
+        <button mat-button style="color: white">{{ mapLabel['button3'] }}</button>
+        <button mat-button style="color: white">{{ mapLabel['button4'] }}</button>
       </div>
       <span class="spacer"></span>
       <bitruby-big-red-button-component
