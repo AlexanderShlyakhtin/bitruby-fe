@@ -1,6 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
-export interface RegisterUser {
-  email: string;
+export interface NewUser {
+  email?: string;
   password: string;
+  phone: string;
 }

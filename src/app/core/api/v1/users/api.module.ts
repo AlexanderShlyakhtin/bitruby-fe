@@ -5,7 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
 import { UsersService } from './services/users.service';
-import { OtpService } from './services/otp.service';
+import { OtpLoginService } from './services/otp-login.service';
+import { OtpRegistrationService } from './services/otp-registration.service';
 
 /**
  * Module that provides all services and configuration.
@@ -16,7 +17,8 @@ import { OtpService } from './services/otp.service';
   declarations: [],
   providers: [
     UsersService,
-    OtpService,
+    OtpLoginService,
+    OtpRegistrationService,
     ApiConfiguration
   ],
 })

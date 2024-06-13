@@ -9,6 +9,7 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
+import { Base } from '../models/base';
 import { completeRegistration } from '../fn/users/complete-registration';
 import { CompleteRegistration$Params } from '../fn/users/complete-registration';
 import { registerUser } from '../fn/users/register-user';
@@ -33,7 +34,7 @@ export class UsersService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  registerUser$Response(params?: RegisterUser$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+  registerUser$Response(params: RegisterUser$Params, context?: HttpContext): Observable<StrictHttpResponse<Base>> {
     return registerUser(this.http, this.rootUrl, params, context);
   }
 
@@ -47,9 +48,9 @@ export class UsersService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  registerUser(params?: RegisterUser$Params, context?: HttpContext): Observable<void> {
+  registerUser(params: RegisterUser$Params, context?: HttpContext): Observable<Base> {
     return this.registerUser$Response(params, context).pipe(
-      map((r: StrictHttpResponse<void>): void => r.body)
+      map((r: StrictHttpResponse<Base>): Base => r.body)
     );
   }
 
@@ -66,7 +67,7 @@ export class UsersService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  completeRegistration$Response(params?: CompleteRegistration$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+  completeRegistration$Response(params: CompleteRegistration$Params, context?: HttpContext): Observable<StrictHttpResponse<Base>> {
     return completeRegistration(this.http, this.rootUrl, params, context);
   }
 
@@ -80,9 +81,9 @@ export class UsersService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  completeRegistration(params?: CompleteRegistration$Params, context?: HttpContext): Observable<void> {
+  completeRegistration(params: CompleteRegistration$Params, context?: HttpContext): Observable<Base> {
     return this.completeRegistration$Response(params, context).pipe(
-      map((r: StrictHttpResponse<void>): void => r.body)
+      map((r: StrictHttpResponse<Base>): Base => r.body)
     );
   }
 
