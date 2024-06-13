@@ -1,12 +1,20 @@
 import {ChangeDetectorRef, Component, EventEmitter, Output} from '@angular/core';
 import {Router} from "@angular/router";
-import {FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {
+    AbstractControl,
+    FormArray,
+    FormBuilder,
+    FormControl,
+    FormGroup,
+    ReactiveFormsModule, ValidationErrors,
+    ValidatorFn,
+    Validators
+} from "@angular/forms";
 import {MatError, MatFormField, MatHint} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {MatButton, MatIconButton} from "@angular/material/button";
 import {MatIcon, MatIconModule} from "@angular/material/icon";
-import {OtpService} from "../../../core/api/v1/users/services/otp.service";
 import {GrantType} from "../../../core/api/v1/users/models/grant-type";
 import {OtpInputComponent} from "../../../shared/inputs/otp-input.component";
 import {BigRedButtonComponent} from "../../../shared/buttons/big-red-button.component";
@@ -17,7 +25,13 @@ import {PasswordInputComponent} from "../../../shared/inputs/password-input.comp
 import {ResendOtpCodeTimeCounterComponent} from "../../../shared/components/resend-otp-code-time-counter.component";
 import {OtpCodeNotReceivedButtonComponent} from "../../../shared/components/otp-code-not-received-button.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {right} from "@popperjs/core";
+import {AVALIABLE_COUNTRY_CODES} from "../../../app.constants";
+import {MatOption} from "@angular/material/autocomplete";
+import {MatSelect} from "@angular/material/select";
+import {SharedModule} from "../../../shared/shared.module";
+import {OtpRegistrationService} from "../../../core/api/v1/users/services/otp-registration.service";
+import { v4 as uuidv4 } from 'uuid';
+
 
 @Component({
     selector: 'bitruby-registration-by-email',
@@ -42,24 +56,51 @@ import {right} from "@popperjs/core";
         PasswordInputComponent,
         ResendOtpCodeTimeCounterComponent,
         OtpCodeNotReceivedButtonComponent,
+        MatOption,
+        MatSelect,
+        SharedModule,
     ],
     template: `
-        <form *ngIf="!isTokenRequestSent" [formGroup]="formByEmail">
+        <form *ngIf="!isTokenRequestSent" [formGroup]="form">
             <div class="row mt-2">
-                <div class="col-md-12">
+                <div class="col-md-4">
                     <mat-form-field appearance="fill">
-                        <input matInput formControlName="email" type="email" placeholder="email">
-                        <mat-hint *ngIf="formByEmail.controls['email'].touched">введите email</mat-hint>
-                        <mat-error *ngIf="formByEmail.controls['email'].invalid">введите email
-                        </mat-error>
+                        <mat-select formControlName="countryCode" required="true">
+                            <mat-option *ngFor="let code of countryCodes" [value]="code.dialCode">
+                                {{ code.dialCode }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-8">
+                    <mat-form-field appearance="fill">
+                        <input matInput formControlName="number" appPhoneInputMask placeholder="phone number" required="true">
+                        <mat-hint *ngIf="form.controls['number'].touched">введите номер телефона</mat-hint>
                     </mat-form-field>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <bitruby-mat-input-password
-                            [formControl]="password"
-                    ></bitruby-mat-input-password>
+                    <mat-form-field appearance="fill">
+                        <input matInput formControlName="email" type="email" placeholder="email">
+                        <mat-hint *ngIf="form.controls['email'].touched">введите email</mat-hint>
+                        <mat-error *ngIf="form.controls['email'].invalid">введите email</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <bitruby-mat-input-password [formControl]="password"></bitruby-mat-input-password>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <mat-form-field appearance="fill">
+                        <input matInput formControlName="confirmPassword" placeholder="confirm password" type="password">
+                        <mat-error *ngIf="form.controls['confirmPassword'].hasError('passwordsMismatch') && form.controls['confirmPassword'].touched">
+                            Passwords do not match
+                        </mat-error>
+                    </mat-form-field>
                 </div>
             </div>
             <div class="row">
@@ -77,7 +118,7 @@ import {right} from "@popperjs/core";
             </div>
             <div class="row mt-2">
                 <bitruby-big-red-button-component
-                        [diasble]="formByEmail.invalid || !formByEmail.controls['consentTerms'].value"
+                        [diasble]="form.invalid || !form.controls['consentTerms'].value"
                         [text]="'Продолжить'"
                         (outputAction)="registerNewUser()"
                 ></bitruby-big-red-button-component>
@@ -85,10 +126,10 @@ import {right} from "@popperjs/core";
         </form>
         <div *ngIf="isTokenRequestSent">
             <bitruby-send-to-otp-code-button
-                    [text]="'Код отправлен на почту'"
-                    [sendTo]="formByEmail.value['email']"
-                    [type]="'email'"
-                    (buttonClicked)="returnToFormHandler($event)"
+                    [text]="'Отправили СМС-код на номер'"
+                    [sendTo]="form.value['countryCode']+form.value['number']"
+                    [type]="'number'"
+                    (buttonClicked)="returnToFormHandler()"
             ></bitruby-send-to-otp-code-button>
             <div class="row mt-2">
                 <bitruby-mat-input-otp
@@ -121,12 +162,14 @@ import {right} from "@popperjs/core";
         }
     `]
 })
-export class RegisterByEmailComponent {
+export class RegisterOptionComponent {
 
-    formByEmail: FormGroup;
+    form: FormGroup;
     isTokenRequestSent = false;
     otpForm: FormGroup;
     checked = false;
+
+    countryCodes = AVALIABLE_COUNTRY_CODES;
 
     @Output()
     otpCodeRequested: EventEmitter<boolean> = new EventEmitter<boolean>()
@@ -137,43 +180,48 @@ export class RegisterByEmailComponent {
         private cd: ChangeDetectorRef,
         private _snackBar: MatSnackBar,
         private registrationService: RegistrationService,
-        private otpService: OtpService
+        private otpService: OtpRegistrationService
     ) {
-        this.formByEmail = this.fb.group({
-            email: new FormControl(undefined, [Validators.required, Validators.email]),
-            password: new FormControl(undefined, Validators.required),
+        this.form = this.fb.group({
+            countryCode: new FormControl(this.countryCodes.at(0)?.dialCode, Validators.required),
+            number: new FormControl(undefined, Validators.required),
+            email: new FormControl(undefined, [Validators.email]),
+            password: new FormControl(undefined, [Validators.required, Validators.minLength(8)]),
+            confirmPassword: new FormControl(undefined, Validators.required),
             consentTerms: new FormControl(undefined, Validators.required)
-        });
+        }, { validators: passwordsMatchValidator() });
         this.otpForm = this.fb.group([])
     }
 
     generateOtpCode(): void {
         this.otpService.generateOtpCodeForRegistration({
             body: {
-                grant_type: GrantType.EmailPassword,
-                sendTo: this.formByEmail.value.email
-            }
+                grant_type: GrantType.PhonePassword,
+                sendTo: this.getFormatedPhoneNumber()
+            },
+            "x-request-id": uuidv4()
         })
             .subscribe({
                 complete: () => {
                     this.isTokenRequestSent = true;
                     this.otpCodeRequested.emit(false)
                 },
-                error: err => {
+                error: (err: any) => {
                     console.error(err);
                 }
             });
     }
 
-    returnToFormHandler($event: void): void {
+    returnToFormHandler(): void {
         this.isTokenRequestSent = false;
         this.otpCodeRequested.emit(true)
     }
 
     registerNewUser(): void {
         this.registrationService.registerNewUser({
-            email: this.formByEmail.value.email,
-            password: this.formByEmail.value.password,
+            phone: this.getFormatedPhoneNumber(),
+            email: this.form.value.email,
+            password: this.form.value.password,
         })
             .subscribe({
                 complete: () => {
@@ -186,15 +234,15 @@ export class RegisterByEmailComponent {
             });
     }
     get password(): FormControl {
-      return this.formByEmail.get('password') as FormControl;
+        return this.form.get('password') as FormControl;
     }
 
     completeRegistration(): void {
         const arrayOtp = this.otpForm.controls['otp'] as FormArray<FormControl>
 
         this.registrationService.completeRegistration({
-            sendTo: this.formByEmail.value.email,
-            grant_type: GrantType.EmailPassword,
+            grant_type: GrantType.PhonePassword,
+            sendTo: this.getFormatedPhoneNumber(),
             otp: arrayOtp.controls.map(control => control.value).join('')
         })
             .subscribe({
@@ -207,4 +255,23 @@ export class RegisterByEmailComponent {
             });
     }
 
+    getFormatedPhoneNumber(): string {
+        return this.form.value.countryCode + this.form.value.number.replace(/[^+\d]/g, '');
+    }
+
+}
+
+export function passwordsMatchValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+        const password = control.get('password');
+        const confirmPassword = control.get('confirmPassword');
+
+        if (password && confirmPassword && password.value !== confirmPassword.value) {
+            confirmPassword.setErrors({ passwordsMismatch: true });
+            return { passwordsMismatch: true };
+        } else {
+            confirmPassword?.setErrors(null);
+            return null;
+        }
+    };
 }

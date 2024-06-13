@@ -1,15 +1,15 @@
-import {ChangeDetectorRef, Component} from '@angular/core';
+import {Component} from '@angular/core';
 import {MatIcon} from "@angular/material/icon";
 import {MatButton} from "@angular/material/button";
 import {MatFormFieldModule, MatSuffix} from "@angular/material/form-field";
 import {NgClass, NgIf, NgSwitch, NgSwitchCase} from "@angular/common";
 import {MatInputModule} from "@angular/material/input";
-import {FormBuilder, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {LoginByPhoneComponent} from "../login/login-options/login-by-phone.component";
 import {LoginByEmailComponent} from "../login/login-options/login-by-email.component";
 import {LoginByQrComponent} from "../login/login-options/login-by-qr.component";
 import {Router} from "@angular/router";
-import {RegisterByEmailComponent} from "./registration-options/register-by-email.component";
+import {RegisterOptionComponent} from "./registration-options/register-option.component";
 
 @Component({
   selector: 'bitruby-registration',
@@ -29,7 +29,7 @@ import {RegisterByEmailComponent} from "./registration-options/register-by-email
     LoginByQrComponent,
     NgSwitch,
     NgSwitchCase,
-    RegisterByEmailComponent
+    RegisterOptionComponent
   ],
   template: `
         <div class="login-form-container">
@@ -39,35 +39,9 @@ import {RegisterByEmailComponent} from "./registration-options/register-by-email
                         <h5>{{ mapLabels['title'] }}</h5>
                     </div>
                 </div>
-                <div class="row mt-2" *ngIf="showSelectOptionsPanel">
-                    <div class="col-md-12 text-start">
-<!--                        <button mat-button class="no-background" (click)="toggleLogin('phone')"-->
-<!--                                [ngClass]="{'bold': selectedLogin === 'phone'}">-->
-<!--                            {{ mapLabels['login-by-phone'] }}-->
-<!--                        </button>-->
-                        <button mat-button class="no-background" (click)="toggleLogin('email')"
-                                [ngClass]="{'bold': selectedRegistration === 'email'}">
-                            {{ mapLabels['registration-by-email'] }}
-                        </button>
-                        <!--                                    <button mat-button class="no-background" (click)="toggleLogin('qr')"-->
-                        <!--                                            [ngClass]="{'bold': selectedLogin === 'qr'}">-->
-                        <!--                                        {{ mapLabels['login-by-qr'] }}-->
-                        <!--                                    </button>-->
-                    </div>
-                </div>
-                <div [ngSwitch]="selectedRegistration">
-<!--                    <div *ngSwitchCase="'phone'">-->
-<!--                        <bitruby-login-by-phone></bitruby-login-by-phone>-->
-<!--                    </div>-->
-                    <div *ngSwitchCase="'email'">
-                        <bitruby-registration-by-email 
-                            (otpCodeRequested)="toggleSelectOptionPanel($event)"
-                        ></bitruby-registration-by-email>
-                    </div>
-                    <!--                                <div *ngSwitchCase="'qr'">-->
-                    <!--                                    <bitruby-login-by-qr></bitruby-login-by-qr>-->
-                    <!--                                </div>-->
-                </div>
+              <bitruby-registration-by-email
+                  (otpCodeRequested)="toggleSelectOptionPanel($event)"
+              ></bitruby-registration-by-email>
             </div>
             <div class="button-container">
                 <button class="w-100" mat-button (click)="goToLogin()"><strong>{{ mapLabels['login'] }}</strong></button>
@@ -114,13 +88,7 @@ export class RegistrationComponent {
 
   constructor(
       private router: Router,
-      private fb: FormBuilder,
-      private cd: ChangeDetectorRef
   ) {
-  }
-
-  toggleLogin(type: 'phone' | 'email' | 'qr'): void {
-    this.selectedRegistration = type;
   }
 
   goToLogin() {

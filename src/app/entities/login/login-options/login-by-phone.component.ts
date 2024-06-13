@@ -9,7 +9,6 @@ import {MatSelectModule} from "@angular/material/select";
 import {SharedModule} from "../../../shared/shared.module";
 import {LoginService} from "../services/login.service";
 import {GrantType} from "../../../core/api/v1/auth/models/grant-type";
-import {OtpService} from "../../../core/api/v1/users/services/otp.service";
 import {SendToOtpCodeButtonComponent} from "../../../shared/components/send-to-otp-code-button.component";
 import {BigRedButtonComponent} from "../../../shared/buttons/big-red-button.component";
 import {PasswordInputComponent} from "../../../shared/inputs/password-input.component";
@@ -17,6 +16,10 @@ import {ResendOtpCodeTimeCounterComponent} from "../../../shared/components/rese
 import {OtpCodeNotReceivedButtonComponent} from "../../../shared/components/otp-code-not-received-button.component";
 import {OtpInputComponent} from "../../../shared/inputs/otp-input.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {AVALIABLE_COUNTRY_CODES} from "../../../app.constants";
+import { v4 as uuidv4 } from 'uuid';
+import {OtpLoginService} from "../../../core/api/v1/users/services/otp-login.service";
+
 
 @Component({
   selector: 'bitruby-login-by-phone',
@@ -40,7 +43,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
     OtpInputComponent
   ],
   template: `
-    <form *ngIf="!isTokenRequestSent" [formGroup]="formByPhone">
+    <form *ngIf="!isTokenRequestSent" [formGroup]="form">
       <div class="row mt-2">
         <div class="col-md-3">
           <mat-form-field appearance="fill">
@@ -54,7 +57,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
         <div class="col-md-9">
           <mat-form-field appearance="fill">
             <input matInput formControlName="number" appPhoneInputMask placeholder="phone number">
-            <mat-hint *ngIf="formByPhone.controls['number'].touched">введите номер телефона</mat-hint>
+            <mat-hint *ngIf="form.controls['number'].touched">введите номер телефона</mat-hint>
           </mat-form-field>
         </div>
       </div>
@@ -67,7 +70,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
       </div>
       <div class="row">
         <bitruby-big-red-button-component
-            [diasble]="formByPhone.invalid"
+            [diasble]="form.invalid"
             [text]="'Продолжить'"
             (outputAction)="generateOtpCode()"
         ></bitruby-big-red-button-component>
@@ -77,16 +80,16 @@ import {MatSnackBar} from "@angular/material/snack-bar";
       <div class="row mt-2">
         <bitruby-send-to-otp-code-button
             [text]="'Отправили СМС-код на номер'"
-            [sendTo]="formByPhone.value['countryCode']+formByPhone.value['number']"
+            [sendTo]="form.value['countryCode']+form.value['number']"
             [type]="'number'"
-            (buttonClicked)="returnToFormHandler($event)"
+            (buttonClicked)="returnToFormHandler()"
         >
         </bitruby-send-to-otp-code-button>
       </div>
       <div class="row mt-2">
         <bitruby-mat-input-otp
             [form]="otpForm"
-            [title]="'Введите код из письма'"
+            [title]="'Введите СМС-код'"
             (otpCompleted)="login()"
         ></bitruby-mat-input-otp>
       </div>
@@ -107,34 +110,25 @@ import {MatSnackBar} from "@angular/material/snack-bar";
   `]
 })
 export class LoginByPhoneComponent {
-  formByPhone!: FormGroup;
+  form!: FormGroup;
   otpForm!: FormGroup;
   isTokenRequestSent = false;
 
   @Output()
   otpCodeRequested: EventEmitter<boolean> = new EventEmitter<boolean>()
 
-  countryCodes: CountryCode[] = [
-    {
-      name: 'Russia',
-      dialCode: '+7'
-    },
-    {
-      name: 'Italy',
-      dialCode: '+39'
-    }
-  ];
+  countryCodes = AVALIABLE_COUNTRY_CODES;
 
   constructor(
       private router: Router,
       private fb: FormBuilder,
       private cd: ChangeDetectorRef,
       private loginService: LoginService,
-      private otpService: OtpService,
+      private otpService: OtpLoginService,
       private _snackBar: MatSnackBar
 
   ) {
-    this.formByPhone = this.fb.group({
+    this.form = this.fb.group({
       countryCode: new FormControl(this.countryCodes.at(0)?.dialCode, Validators.required),
       number: new FormControl(undefined, Validators.required),
       password: new FormControl(undefined, Validators.required),
@@ -145,21 +139,20 @@ export class LoginByPhoneComponent {
   login() {
     const arrayOtp = this.otpForm.controls['otp'] as FormArray<FormControl>
     this.loginService.login(
-        this.formByPhone.value.countryCode + this.formByPhone.value.number.replace(/[^+\d]/g, ''),
-        this.formByPhone.value.password,
+        this.form.value.countryCode + this.form.value.number.replace(/[^+\d]/g, ''),
+        this.form.value.password,
         GrantType.PhonePassword,
         arrayOtp.controls.map(control => control.value).join('')
     )
   }
 
   generateOtpCode(): void {
-    const number = this.formByPhone.value.number.replace(/[^+\d]/g, '');
-
     this.otpService.generateOtpCodeForLogin({body: {
-        password: this.formByPhone.value.password,
+        password: this.form.value.password,
         grant_type: GrantType.PhonePassword,
-        sendTo: this.formByPhone.value.countryCode + number
-      }}).subscribe({
+        sendTo: this.getFormatedPhoneNumber(),
+      }, "x-request-id": uuidv4()
+    }).subscribe({
       complete: () => {
         this.isTokenRequestSent = true;
         this.otpCodeRequested.emit(false)
@@ -170,18 +163,17 @@ export class LoginByPhoneComponent {
     })
   }
 
-  returnToFormHandler($event: void) {
+  returnToFormHandler() {
     this.isTokenRequestSent = false;
     this.otpCodeRequested.emit(true)
   }
 
   get password(): FormControl {
-    return this.formByPhone.controls['password'] as FormControl;
+    return this.form.controls['password'] as FormControl;
   }
 
-}
+  getFormatedPhoneNumber(): string {
+    return this.form.value.countryCode + this.form.value.number.replace(/[^+\d]/g, '');
+  }
 
-interface CountryCode {
-  name: string;
-  dialCode: string;
 }

@@ -1,22 +1,22 @@
-import {Component, forwardRef, Input} from "@angular/core";
-import {ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule} from "@angular/forms";
-import {NgClass, NgForOf, NgIf} from "@angular/common";
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatInputModule} from "@angular/material/input";
-import {MatIconModule} from "@angular/material/icon";
+import {Component, forwardRef, Input} from '@angular/core';
+import {ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl, ReactiveFormsModule} from '@angular/forms';
+import {NgClass, NgForOf, NgIf} from '@angular/common';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatIconModule} from '@angular/material/icon';
 
 @Component({
     selector: 'bitruby-mat-input-password',
     template: `
-    <mat-form-field appearance="fill">
-      <input matInput [formControl]="formControl" [type]="getInputType()" placeholder="password">
-      <mat-icon matSuffix (click)="changeVisibility()">{{ getVisibility() }}</mat-icon>
-      <mat-error *ngIf="formControl.invalid">введите пароль</mat-error>
-    </mat-form-field>
-  `,
+        <mat-form-field appearance="fill">
+            <input matInput [formControl]="formControl" [type]="getInputType()" [placeholder]="placeholder">
+            <mat-icon matSuffix (click)="changeVisibility()">{{ getVisibility() }}</mat-icon>
+            <mat-error *ngIf="formControl.hasError('minlength')">пароль должен быть больше 8 символов</mat-error>
+        </mat-form-field>
+    `,
     styles: [`
-    /* Add your styles here */
-  `],
+        /* Add your styles here */
+    `],
     providers: [{
         provide: NG_VALUE_ACCESSOR,
         useExisting: forwardRef(() => PasswordInputComponent),
@@ -37,9 +37,14 @@ export class PasswordInputComponent implements ControlValueAccessor {
     @Input()
     formControl!: FormControl;
 
+    @Input()
+    placeholder = 'password';
+
     pwdHide1 = true;
 
-    private onChange = (value: any) => {};
+    private onChange = (value: any) => {
+        value
+    };
     private onTouched = () => {};
 
     changeVisibility() {

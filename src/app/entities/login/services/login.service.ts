@@ -15,10 +15,10 @@ export class LoginService {
       private router: Router,
       private _snackBar: MatSnackBar
   ) {
-
   }
 
   public login(username: string, password: string, grantType: GrantType, otp: string): void {
+
     this.auth.getTokenByUserPassword({body: {
       grant_type: grantType,
         password: password,

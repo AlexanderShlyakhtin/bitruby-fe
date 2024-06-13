@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Output} from '@angular/core';
 import {Router} from "@angular/router";
 import {FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatError, MatFormField, MatHint} from "@angular/material/form-field";
@@ -7,16 +7,17 @@ import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {MatButton, MatIconButton} from "@angular/material/button";
 import {MatIcon} from "@angular/material/icon";
 import {LoginService} from "../services/login.service";
-import {OtpService} from "../../../core/api/v1/users/services/otp.service";
 import {GrantType} from "../../../core/api/v1/users/models/grant-type";
 import {OtpInputComponent} from "../../../shared/inputs/otp-input.component";
 import {SendToOtpCodeButtonComponent} from "../../../shared/components/send-to-otp-code-button.component";
 import {BigRedButtonComponent} from "../../../shared/buttons/big-red-button.component";
 import {PasswordInputComponent} from "../../../shared/inputs/password-input.component";
-import {interval, Subscription} from "rxjs";
 import {ResendOtpCodeTimeCounterComponent} from "../../../shared/components/resend-otp-code-time-counter.component";
 import {OtpCodeNotReceivedButtonComponent} from "../../../shared/components/otp-code-not-received-button.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {OtpLoginService} from "../../../core/api/v1/users/services/otp-login.service";
+import { v4 as uuidv4 } from 'uuid';
+
 
 @Component({
   selector: 'bitruby-login-by-email',
@@ -70,7 +71,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
           [text]="'Код отправлен на почту'"
           [sendTo]="formByEmail.value['email']"
           [type]="'email'"
-          (buttonClicked)="returnToFormHandler($event)"
+          (buttonClicked)="returnToFormHandler()"
       ></bitruby-send-to-otp-code-button>
       <div class="row mt-2">
         <bitruby-mat-input-otp
@@ -109,7 +110,7 @@ export class LoginByEmailComponent {
       private fb: FormBuilder,
       private cd: ChangeDetectorRef,
       private loginService: LoginService,
-      private otpService: OtpService,
+      private otpService: OtpLoginService,
       private _snackBar: MatSnackBar
   ) {
     this.formByEmail = this.fb.group({
@@ -126,7 +127,8 @@ export class LoginByEmailComponent {
         password: this.formByEmail.value.password,
         grant_type: GrantType.EmailPassword,
         sendTo: this.formByEmail.value.email
-      }
+      },
+      "x-request-id": uuidv4()
     }).subscribe({
       complete: () => {
         this.isTokenRequestSent = true
@@ -150,7 +152,7 @@ export class LoginByEmailComponent {
 
   }
 
-  returnToFormHandler($event: void) {
+  returnToFormHandler() {
     this.isTokenRequestSent = false;
     this.otpCodeRequested.emit(true)
 

@@ -2,7 +2,6 @@ import {
     Component,
     ElementRef,
     EventEmitter,
-    input,
     Input,
     OnInit,
     Output,
@@ -11,7 +10,7 @@ import {
 } from "@angular/core";
 import {FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgClass, NgForOf} from "@angular/common";
-import {MatFormField, MatFormFieldModule} from "@angular/material/form-field";
+import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {PATTERN_ONY_NUMBERS} from "../../app.constants";
 
@@ -105,6 +104,7 @@ export class OtpInputComponent implements OnInit {
             }
         }
         if (this.isOtpComplete() && this.form.valid) {
+            debugger;
             this.otpCompleted.emit();
         }
     }
@@ -131,6 +131,7 @@ export class OtpInputComponent implements OnInit {
             }
 
             if (this.isOtpComplete() && this.form.valid) {
+                debugger;
                 this.otpCompleted.emit();
             }
         }
