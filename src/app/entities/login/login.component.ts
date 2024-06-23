@@ -2,10 +2,10 @@ import {ChangeDetectorRef, Component} from '@angular/core';
 import {MatIcon} from "@angular/material/icon";
 import {Router} from "@angular/router";
 import {MatButton} from "@angular/material/button";
-import {MatFormField, MatFormFieldModule, MatHint, MatSuffix} from "@angular/material/form-field";
-import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {MatFormFieldModule, MatSuffix} from "@angular/material/form-field";
+import {FormBuilder, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NgClass, NgIf, NgSwitch, NgSwitchCase} from "@angular/common";
-import {MatInput, MatInputModule} from "@angular/material/input";
+import {MatInputModule} from "@angular/material/input";
 import {LoginByPhoneComponent} from "./login-options/login-by-phone.component";
 import {LoginByEmailComponent} from "./login-options/login-by-email.component";
 import {LoginByQrComponent} from "./login-options/login-by-qr.component";
@@ -68,27 +68,6 @@ import {LoginByQrComponent} from "./login-options/login-by-qr.component";
         </div>
     `,
     styles: [`
-        
-        .login-form-container {
-            display: flex;
-            flex-direction: column; /* Align items vertically */
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-        }
-        
-        .login-form {
-            width: 480px;
-            height: 562px;
-            background-color: #ffffff;
-            padding: 1rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .button-container {
-            margin-top: 10px; /* Add margin to create space between form and button */
-            text-align: center; /* Center the button */
-        }
     `]
 })
 export class LoginComponent {

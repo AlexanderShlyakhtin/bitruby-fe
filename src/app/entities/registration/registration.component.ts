@@ -9,7 +9,7 @@ import {LoginByPhoneComponent} from "../login/login-options/login-by-phone.compo
 import {LoginByEmailComponent} from "../login/login-options/login-by-email.component";
 import {LoginByQrComponent} from "../login/login-options/login-by-qr.component";
 import {Router} from "@angular/router";
-import {RegisterOptionComponent} from "./registration-options/register-option.component";
+import {RegistrationOptionComponent} from "./registration-options/registration-option.component";
 
 @Component({
   selector: 'bitruby-registration',
@@ -29,7 +29,8 @@ import {RegisterOptionComponent} from "./registration-options/register-option.co
     LoginByQrComponent,
     NgSwitch,
     NgSwitchCase,
-    RegisterOptionComponent
+    RegistrationComponent,
+    RegistrationOptionComponent
   ],
   template: `
         <div class="login-form-container">
@@ -39,9 +40,9 @@ import {RegisterOptionComponent} from "./registration-options/register-option.co
                         <h5>{{ mapLabels['title'] }}</h5>
                     </div>
                 </div>
-              <bitruby-registration-by-email
+              <bitruby-registration-by-phone
                   (otpCodeRequested)="toggleSelectOptionPanel($event)"
-              ></bitruby-registration-by-email>
+              ></bitruby-registration-by-phone>
             </div>
             <div class="button-container">
                 <button class="w-100" mat-button (click)="goToLogin()"><strong>{{ mapLabels['login'] }}</strong></button>
@@ -50,26 +51,7 @@ import {RegisterOptionComponent} from "./registration-options/register-option.co
     `,
   styles: [`
 
-    .login-form-container {
-      display: flex;
-      flex-direction: column; /* Align items vertically */
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-    }
-
-    .login-form {
-      width: 480px;
-      height: 562px;
-      background-color: #ffffff;
-      padding: 1rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .button-container {
-      margin-top: 10px; /* Add margin to create space between form and button */
-      text-align: center; /* Center the button */
-    }
+    
   `]
 })
 export class RegistrationComponent {
@@ -97,6 +79,5 @@ export class RegistrationComponent {
 
   toggleSelectOptionPanel(event: boolean) {
     this.showSelectOptionsPanel = event;
-
   }
 }

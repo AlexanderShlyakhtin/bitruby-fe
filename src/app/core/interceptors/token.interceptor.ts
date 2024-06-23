@@ -1,12 +1,12 @@
 import {inject} from "@angular/core";
 import {HttpInterceptorFn} from "@angular/common/http";
-import {OidcSecurityService} from "angular-auth-oidc-client";
-import { Buffer } from "buffer";
+import {Buffer} from "buffer";
 import {environment} from "../../../environments/environment.development";
+import {AuthClientService} from "../auth/auth-client.service";
 
 export const tokenInterceptor: HttpInterceptorFn = (request, next) => {
 
-    const authService = inject(OidcSecurityService);
+    const authService = inject(AuthClientService);
 
     if (
         (

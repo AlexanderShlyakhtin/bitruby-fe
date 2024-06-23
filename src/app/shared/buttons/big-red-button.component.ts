@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, Output} from "@angular/core";
 import {MatButton} from "@angular/material/button";
-import {FormGroup} from "@angular/forms";
 
 @Component({
     selector: 'bitruby-big-red-button-component',

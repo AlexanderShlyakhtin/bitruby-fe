@@ -14,6 +14,14 @@ export const routes: Routes = [
         loadChildren: () => import('./entities/registration/registration.module').then(m => m.RegistrationModule),
     },
     {
+        path: 'account',
+        loadChildren: () => import('./entities/account/account.module').then(m => m.AccountModule),
+    },
+    {
+        path: 'info',
+        loadChildren: () => import('./entities/info/info.module').then(m => m.InfoModule),
+    },
+    {
         path: 'playground',
         loadChildren: () => import('./playground/playground.module').then(m => m.PlaygroundModule),
     },

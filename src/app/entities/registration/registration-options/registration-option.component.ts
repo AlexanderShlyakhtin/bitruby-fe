@@ -6,7 +6,8 @@ import {
     FormBuilder,
     FormControl,
     FormGroup,
-    ReactiveFormsModule, ValidationErrors,
+    ReactiveFormsModule,
+    ValidationErrors,
     ValidatorFn,
     Validators
 } from "@angular/forms";
@@ -30,11 +31,11 @@ import {MatOption} from "@angular/material/autocomplete";
 import {MatSelect} from "@angular/material/select";
 import {SharedModule} from "../../../shared/shared.module";
 import {OtpRegistrationService} from "../../../core/api/v1/users/services/otp-registration.service";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 
 @Component({
-    selector: 'bitruby-registration-by-email',
+    selector: 'bitruby-registration-by-phone',
     standalone: true,
     imports: [
         MatError,
@@ -107,10 +108,10 @@ import { v4 as uuidv4 } from 'uuid';
                 <div class="col-md-12">
                     <mat-checkbox formControlName="consentTerms">
                         Принимаю
-                        <a href="" target="_blank" class="terms-link">
+                        <a href="/info/use-terms" target="_blank" class="terms-link">
                             <strong>условия обслуживания</strong>
                         </a> и
-                        <a href="" target="_blank" class="terms-link">
+                        <a href="/info/privacy-terms" target="_blank" class="terms-link">
                             <strong>политику конфиденциальности</strong>
                         </a>
                     </mat-checkbox>
@@ -162,7 +163,7 @@ import { v4 as uuidv4 } from 'uuid';
         }
     `]
 })
-export class RegisterOptionComponent {
+export class RegistrationOptionComponent {
 
     form: FormGroup;
     isTokenRequestSent = false;
@@ -214,6 +215,7 @@ export class RegisterOptionComponent {
 
     returnToFormHandler(): void {
         this.isTokenRequestSent = false;
+        this.otpForm.reset()
         this.otpCodeRequested.emit(true)
     }
 

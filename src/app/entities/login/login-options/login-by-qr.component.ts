@@ -1,8 +1,5 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {MatButton} from "@angular/material/button";
-import {GrantType} from "../../../core/api/v1/auth/models/grant-type";
-import {environment} from "../../../../environments/environment.development";
-import {OidcSecurityService} from "angular-auth-oidc-client";
 
 @Component({
   selector: 'bitruby-login-by-qr',
@@ -23,14 +20,11 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 export class LoginByQrComponent {
 
   constructor(
-      private oidcSecurityService: OidcSecurityService
   ) {
   }
 
 
   login(): void {
-    this.oidcSecurityService.authorize();
-
   }
 
 }

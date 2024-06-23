@@ -1,6 +1,6 @@
 import {Routes} from '@angular/router';
-import {RegistrationComponent} from "./registration.component";
 import {LoginRegistrationTemplateComponent} from "../../shared/components/login-registration-template.component";
+import {RestorePasswordComponent} from "./restore-password.component";
 
 export const routes: Routes = [
     {
@@ -9,7 +9,7 @@ export const routes: Routes = [
         children: [
             {
                 path: '',
-                component: RegistrationComponent
+                component: RestorePasswordComponent
             }
         ]
     }

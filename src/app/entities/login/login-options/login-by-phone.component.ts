@@ -17,7 +17,7 @@ import {OtpCodeNotReceivedButtonComponent} from "../../../shared/components/otp-
 import {OtpInputComponent} from "../../../shared/inputs/otp-input.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {AVALIABLE_COUNTRY_CODES} from "../../../app.constants";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import {OtpLoginService} from "../../../core/api/v1/users/services/otp-login.service";
 
 
@@ -95,7 +95,7 @@ import {OtpLoginService} from "../../../core/api/v1/users/services/otp-login.ser
       </div>
       <div class="row">
         <bitruby-resend-otp-code-time-counter
-            (buttonClicked)="generateOtpCode()"
+            (buttonClicked)="resendOtpCode()"
         ></bitruby-resend-otp-code-time-counter>
       </div>
       <div class="row mt-4">
@@ -163,8 +163,14 @@ export class LoginByPhoneComponent {
     })
   }
 
+  resendOtpCode(): void {
+    this.otpForm.reset()
+    this.generateOtpCode()
+  }
+
   returnToFormHandler() {
     this.isTokenRequestSent = false;
+    this.otpForm.reset()
     this.otpCodeRequested.emit(true)
   }
 

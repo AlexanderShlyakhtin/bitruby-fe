@@ -8,7 +8,6 @@ servers:
     description: The URL prefix for API server
 tags:
   - name: auth
-  - name: otp
 
 paths:
   /oauth2/token:
@@ -19,6 +18,19 @@ paths:
         - auth
       security:
         - basicAuth: []
+      parameters:
+        - name: grant_type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - refresh_token
+        - name: refresh_token
+          in: query
+          required: false
+          schema:
+            type: string
       requestBody:
         $ref: '#/components/requestBodies/TokenRequest'
       responses:

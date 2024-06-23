@@ -1,17 +1,19 @@
 /* tslint:disable */
 /* eslint-disable */
-import { HttpClient, HttpContext } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import {HttpClient, HttpContext} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 
-import { BaseService } from '../base-service';
-import { ApiConfiguration } from '../api-configuration';
-import { StrictHttpResponse } from '../strict-http-response';
+import {BaseService} from '../base-service';
+import {ApiConfiguration} from '../api-configuration';
+import {StrictHttpResponse} from '../strict-http-response';
 
-import { Base } from '../models/base';
-import { generateOtpCodeForRegistration } from '../fn/otp-registration/generate-otp-code-for-registration';
-import { GenerateOtpCodeForRegistration$Params } from '../fn/otp-registration/generate-otp-code-for-registration';
+import {Base} from '../models/base';
+import {
+    generateOtpCodeForRegistration,
+    GenerateOtpCodeForRegistration$Params
+} from '../fn/otp-registration/generate-otp-code-for-registration';
 
 @Injectable({ providedIn: 'root' })
 export class OtpRegistrationService extends BaseService {

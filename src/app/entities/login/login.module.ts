@@ -1,8 +1,7 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterModule} from "@angular/router";
-import {routes} from "./logn.routes";
-import {AuthApiConfigModule} from "../../core/api-config/api-auth/auth-api-config.module";
+import {routes} from "./login.routes";
 
 
 @NgModule({

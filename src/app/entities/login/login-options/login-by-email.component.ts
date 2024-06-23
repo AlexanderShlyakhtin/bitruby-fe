@@ -16,7 +16,7 @@ import {ResendOtpCodeTimeCounterComponent} from "../../../shared/components/rese
 import {OtpCodeNotReceivedButtonComponent} from "../../../shared/components/otp-code-not-received-button.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {OtpLoginService} from "../../../core/api/v1/users/services/otp-login.service";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 
 @Component({
@@ -82,7 +82,7 @@ import { v4 as uuidv4 } from 'uuid';
       </div>
       <div class="row">
         <bitruby-resend-otp-code-time-counter
-            (buttonClicked)="generateOtpCode()"
+            (buttonClicked)="resendOtpCode()"
         ></bitruby-resend-otp-code-time-counter>
       </div>
       <div class="row mt-4">
@@ -120,7 +120,6 @@ export class LoginByEmailComponent {
     this.otpForm = this.fb.group([])
   }
 
-
   generateOtpCode(): void {
     this.otpService.generateOtpCodeForLogin({
       body: {
@@ -141,6 +140,11 @@ export class LoginByEmailComponent {
     })
   }
 
+  resendOtpCode(): void {
+    this.otpForm.reset()
+    this.generateOtpCode()
+  }
+
   login() {
     const arrayOtp = this.otpForm.controls['otp'] as FormArray<FormControl>
     this.loginService.login(
@@ -149,11 +153,11 @@ export class LoginByEmailComponent {
         GrantType.EmailPassword,
         arrayOtp.controls.map(control => control.value).join('')
     )
-
   }
 
   returnToFormHandler() {
     this.isTokenRequestSent = false;
+    this.otpForm.reset()
     this.otpCodeRequested.emit(true)
 
   }

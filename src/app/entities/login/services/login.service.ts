@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {AuthService} from "../../../core/api/v1/auth/services/auth.service";
 import {GrantType} from "../../../core/api/v1/auth/models/grant-type";
 import {environment} from "../../../../environments/environment.development";

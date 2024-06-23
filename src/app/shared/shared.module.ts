@@ -1,10 +1,8 @@
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {PhoneInputMaskDirective} from "./directives/phone-input-mask-directive";
-import {PhoneMaskPipe} from "./pipe/phone-mask-pipe";
 import {PipeModule} from "./pipe/pipe.module";
 import {LogoComponent} from "./logo/logo.components";
-
 
 
 @NgModule({

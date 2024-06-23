@@ -1,13 +1,4 @@
-import {
-    Component,
-    ElementRef,
-    EventEmitter,
-    Input,
-    OnInit,
-    Output,
-    QueryList,
-    ViewChildren
-} from "@angular/core";
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren} from "@angular/core";
 import {FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgClass, NgForOf} from "@angular/common";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -104,7 +95,6 @@ export class OtpInputComponent implements OnInit {
             }
         }
         if (this.isOtpComplete() && this.form.valid) {
-            debugger;
             this.otpCompleted.emit();
         }
     }
@@ -131,7 +121,6 @@ export class OtpInputComponent implements OnInit {
             }
 
             if (this.isOtpComplete() && this.form.valid) {
-                debugger;
                 this.otpCompleted.emit();
             }
         }
