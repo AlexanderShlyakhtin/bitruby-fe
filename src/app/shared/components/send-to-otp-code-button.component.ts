@@ -12,7 +12,7 @@ import {NgIf} from "@angular/common";
             <button class="ellipse-button" (click)="buttonClicked.emit()">
                 <mat-icon>arrow_back</mat-icon>
             </button>
-            <span class="button-text">
+            <span class="button-text" *ngIf="sendTo">
                 <p>{{ text }}</p>
                 <div *ngIf="type === 'number'">{{ sendTo | phoneMaskPipe }}</div>
                 <div *ngIf="type === 'email'">{{ sendTo | emailMaskDisplay }}</div>

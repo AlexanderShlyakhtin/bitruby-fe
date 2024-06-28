@@ -83,7 +83,7 @@ export class OtpInputComponent implements OnInit {
     }
 
     createOtpControls(): FormControl[] {
-        return Array(6).fill('').map(() => new FormControl('', [Validators.required, Validators.pattern(PATTERN_ONY_NUMBERS)]));
+        return Array(6).fill('').map(() => new FormControl('', [Validators.pattern(PATTERN_ONY_NUMBERS)]));
     }
 
     onKeyUp(event: KeyboardEvent, index: number): void {

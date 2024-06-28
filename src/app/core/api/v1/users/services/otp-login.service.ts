@@ -1,16 +1,17 @@
 /* tslint:disable */
 /* eslint-disable */
-import {HttpClient, HttpContext} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import { HttpClient, HttpContext } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-import {BaseService} from '../base-service';
-import {ApiConfiguration} from '../api-configuration';
-import {StrictHttpResponse} from '../strict-http-response';
+import { BaseService } from '../base-service';
+import { ApiConfiguration } from '../api-configuration';
+import { StrictHttpResponse } from '../strict-http-response';
 
-import {Base} from '../models/base';
-import {generateOtpCodeForLogin, GenerateOtpCodeForLogin$Params} from '../fn/otp-login/generate-otp-code-for-login';
+import { Base } from '../models/base';
+import { generateOtpCodeForLogin } from '../fn/otp-login/generate-otp-code-for-login';
+import { GenerateOtpCodeForLogin$Params } from '../fn/otp-login/generate-otp-code-for-login';
 
 @Injectable({ providedIn: 'root' })
 export class OtpLoginService extends BaseService {

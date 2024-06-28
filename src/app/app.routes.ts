@@ -1,4 +1,6 @@
 import {Routes} from '@angular/router';
+import {authGuard} from "./core/guards/auth.guard";
+import {userAccountStatusGuard} from "./core/guards/user-account-status.guard";
 
 export const routes: Routes = [
     {
@@ -14,8 +16,13 @@ export const routes: Routes = [
         loadChildren: () => import('./entities/registration/registration.module').then(m => m.RegistrationModule),
     },
     {
+        path: 'restore-password',
+        loadChildren: () => import('./entities/restore-password/restore-password.module').then(m => m.RestorePasswordModule),
+    },
+    {
         path: 'account',
         loadChildren: () => import('./entities/account/account.module').then(m => m.AccountModule),
+        canActivate: [ authGuard ]
     },
     {
         path: 'info',

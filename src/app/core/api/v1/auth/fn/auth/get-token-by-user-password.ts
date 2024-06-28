@@ -10,19 +10,22 @@ import { GrantType } from '../../models/grant-type';
 import { Token } from '../../models/token';
 
 export interface GetTokenByUserPassword$Params {
-  grant_type?: 'refresh_token';
+  grant_type?: GrantType;
   refresh_token?: string;
   
     /**
      * Get token by grant type and password
      */
-    body?: {
+    body?: ({
+'grant_type': GrantType;
+'refresh_token': string;
+} | {
 'grant_type': GrantType;
 'username': string;
 'password': string;
 'scope': string;
 'otp': string;
-}
+})
 }
 
 export function getTokenByUserPassword(http: HttpClient, rootUrl: string, params?: GetTokenByUserPassword$Params, context?: HttpContext): Observable<StrictHttpResponse<Token>> {

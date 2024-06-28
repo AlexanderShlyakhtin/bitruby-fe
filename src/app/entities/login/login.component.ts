@@ -9,6 +9,7 @@ import {MatInputModule} from "@angular/material/input";
 import {LoginByPhoneComponent} from "./login-options/login-by-phone.component";
 import {LoginByEmailComponent} from "./login-options/login-by-email.component";
 import {LoginByQrComponent} from "./login-options/login-by-qr.component";
+import {RestorePasswordButtonComponent} from "../../shared/components/restore-password-button.component";
 
 @Component({
     selector: 'bitruby-login',
@@ -27,7 +28,8 @@ import {LoginByQrComponent} from "./login-options/login-by-qr.component";
         NgClass,
         LoginByQrComponent,
         NgSwitch,
-        NgSwitchCase
+        NgSwitchCase,
+        RestorePasswordButtonComponent
     ],
     template: `
         <div class="login-form-container">
@@ -47,6 +49,10 @@ import {LoginByQrComponent} from "./login-options/login-by-qr.component";
                                 [ngClass]="{'bold': selectedLogin === 'email'}">
                             {{ mapLabels['login-by-email'] }}
                         </button>
+<!--                        <button mat-button class="no-background" (click)="toggleLogin('qr')"-->
+<!--                                [ngClass]="{'bold': selectedLogin === 'qr'}">-->
+<!--                            {{ mapLabels['login-by-qr'] }}-->
+<!--                        </button>-->
                     </div>
                 </div>
                 <div [ngSwitch]="selectedLogin">
@@ -60,6 +66,14 @@ import {LoginByQrComponent} from "./login-options/login-by-qr.component";
                                 (otpCodeRequested)="toggleSelectOptionPanel($event)"
                         ></bitruby-login-by-email>
                     </div>
+<!--                    <div *ngSwitchCase="'qr'">-->
+<!--                        <bitruby-login-by-qr-->
+<!--                                (otpCodeRequested)="toggleSelectOptionPanel($event)"-->
+<!--                        ></bitruby-login-by-qr>-->
+<!--                    </div>-->
+                </div>
+                <div class="mt-4">
+                    <bitruby-restore-password-button></bitruby-restore-password-button>
                 </div>
             </div>
             <div class="button-container">
@@ -68,6 +82,8 @@ import {LoginByQrComponent} from "./login-options/login-by-qr.component";
         </div>
     `,
     styles: [`
+        
+        
     `]
 })
 export class LoginComponent {
@@ -76,6 +92,7 @@ export class LoginComponent {
         title: 'Вход',
         'login-by-phone': 'по телефону',
         'login-by-email': 'по email',
+        'login-by-qr': 'по qr',
         'registration': 'У меня еще нет аккаунта'
     }
 
@@ -89,7 +106,7 @@ export class LoginComponent {
     ) {
     }
 
-    toggleLogin(type: 'phone' | 'email'): void {
+    toggleLogin(type: 'phone' | 'email' | 'qr'): void {
         this.selectedLogin = type;
     }
 
@@ -99,6 +116,5 @@ export class LoginComponent {
 
     toggleSelectOptionPanel(event: boolean) {
         this.showSelectOptionsPanel = event;
-
     }
 }

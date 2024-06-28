@@ -5,6 +5,16 @@ import {GrantType} from "../api/v1/auth/models/grant-type";
 import {Router} from "@angular/router";
 import {Observable, of} from "rxjs";
 import {Token} from "../api/v1/auth/models/token";
+import {v4 as uuidv4} from "uuid";
+import {OtpLoginService} from "../api/v1/users/services/otp-login.service";
+import {Base, GrantType as GrantTypeUsers} from "../api/v1/users/models";
+import {OtpRegistrationService} from "../api/v1/users/services/otp-registration.service";
+import {UsersService} from "../api/v1/users/services/users.service";
+import {OtpRestorePasswordService} from "../api/v1/users/services/otp-restore-password.service";
+import {SessionStorageService} from "../services/session-storage.service";
+import {ACCESS_TOKEN, EXPIRES_IN, REFRESH_TOKEN} from "../../app.constants";
+import {IntrospectToken} from "../api/v1/auth/models/introspect-token";
+import {map} from "rxjs/operators";
 
 @Injectable({
     providedIn: 'root'
@@ -18,14 +28,14 @@ export class AuthClientService {
     private postLogoutRedirectUri: string = '/';
     private silentRenew: boolean;
 
-    userLevel!: string;
-    accessToken!: string;
-    refreshToken!: string;
-    expiresIn!: number;
-
     constructor(
         private authService: AuthService,
         private router: Router,
+        private otpService: OtpLoginService,
+        private usersService: UsersService,
+        private otpServiceRestore: OtpRestorePasswordService,
+        private otpServiceRegistration: OtpRegistrationService,
+        private sessionStorageService: SessionStorageService
     ) {
         this.clientId = authConfigModule.clientId;
         this.clientSecret = authConfigModule.clientSecret;
@@ -60,8 +70,38 @@ export class AuthClientService {
         })
     }
 
+    generateOtpLogin(username: string, password: string, grantType: GrantTypeUsers): Observable<Base> {
+        return this.otpService.generateOtpCodeForLogin({body: {
+                sendTo: username,
+                password: password,
+                grant_type: grantType,
+            }, "x-request-id": uuidv4()
+        })
+    }
+
+    generateOtpRegistration(username: string, grantType: GrantTypeUsers): Observable<Base> {
+        return this.otpServiceRegistration.generateOtpCodeForRegistration({body: {
+                sendTo: username,
+                grant_type: grantType,
+            }, "x-request-id": uuidv4()
+        })
+    }
+
+    generateOtpRestorePassword(username: string, grantType: GrantTypeUsers): Observable<Base> {
+        return this.otpServiceRestore.generateOtpCodeForRestoringPassword({body: {
+                sendTo: username,
+                grant_type: grantType,
+            }, "x-request-id": uuidv4()
+        })
+    }
+
     private refreshAccessToken(): void {
-        this.authService.getTokenByUserPassword({refresh_token: this.refreshToken, grant_type: "refresh_token"})
+        this.authService.getTokenByUserPassword({
+            body: {
+                refresh_token: this.sessionStorageService.getItem(REFRESH_TOKEN),
+                grant_type: GrantType.RefreshToken
+        }
+            })
             .subscribe({
                 next: value => {
                     this.setToken(value);
@@ -73,13 +113,51 @@ export class AuthClientService {
     }
 
     getUserLevel(): Observable<string> {
-        return of(this.userLevel)
+        let userLevel: string = '0';
+        try {
+            const payload = this.getAccessTokenFromStorage()!.split('.')[1];
+            const decodedPayload = this.base64UrlDecode(payload);
+            const parse = JSON.parse(decodedPayload);
+            userLevel = parse?.level;
+
+        } catch (error) {
+            console.error('Invalid JWT token', error);
+        }
+        return of(userLevel)
     }
 
-    getAccessToken(): Observable<string> {
-        return of(this.accessToken);
+    introspectToken(): Observable<IntrospectToken> {
+        const token = this.getAccessTokenFromStorage();
+        if(token === null) {
+            return of({active: false} as IntrospectToken);
+        }
+        return this.authService.introspectAccessToken({
+            body: {
+                token: token
+            }
+        })
     }
 
+    private getAccessTokenFromStorage(): string | null {
+        return this.sessionStorageService.getItem(ACCESS_TOKEN);
+    }
+
+    authenticated(): Observable<boolean> {
+        if(this.getAccessTokenFromStorage() === null) {
+            return of(false);
+        }
+        else {
+            return of(true)
+        }
+    }
+
+    getAccessToken(): Observable<string | null> {
+        return of(this.getAccessTokenFromStorage());
+    }
+
+    getAccessTokenFn(): string | null {
+        return this.getAccessTokenFromStorage();
+    }
 
     private base64UrlDecode(str: string): string {
         // Replace non-url compatible chars with base64 standard chars
@@ -94,19 +172,13 @@ export class AuthClientService {
     }
 
     private setToken(value: Token) {
-        this.accessToken = value.access_token;
-        this.refreshToken = value.refresh_token;
-        this.expiresIn = value.expires_in;
+        this.sessionStorageService.setItem(ACCESS_TOKEN, value.access_token)
+        this.sessionStorageService.setItem(REFRESH_TOKEN, value.refresh_token)
+        this.sessionStorageService.setItem(EXPIRES_IN, value.expires_in)
 
-        try {
-            const payload = this.accessToken.split('.')[1];
-            const decodedPayload = this.base64UrlDecode(payload);
-            const parse = JSON.parse(decodedPayload);
-            this.userLevel = parse?.level;
 
-        } catch (error) {
-            console.error('Invalid JWT token', error);
-        }
 
     }
+
+
 }

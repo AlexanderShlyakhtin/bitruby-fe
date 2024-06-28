@@ -1,12 +1,11 @@
-import {ChangeDetectorRef, Component, EventEmitter, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Output, ViewChild} from '@angular/core';
 import {Router} from "@angular/router";
 import {FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {MatError, MatFormField, MatHint} from "@angular/material/form-field";
+import {MatError, MatFormField, MatHint, MatLabel} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {MatButton, MatIconButton} from "@angular/material/button";
 import {MatIcon} from "@angular/material/icon";
-import {LoginService} from "../services/login.service";
 import {GrantType} from "../../../core/api/v1/users/models/grant-type";
 import {OtpInputComponent} from "../../../shared/inputs/otp-input.component";
 import {SendToOtpCodeButtonComponent} from "../../../shared/components/send-to-otp-code-button.component";
@@ -17,6 +16,8 @@ import {OtpCodeNotReceivedButtonComponent} from "../../../shared/components/otp-
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {OtpLoginService} from "../../../core/api/v1/users/services/otp-login.service";
 import {v4 as uuidv4} from 'uuid';
+import {MatStep, MatStepLabel, MatStepper, MatStepperNext, MatStepperPrevious} from "@angular/material/stepper";
+import {AuthClientService} from "../../../core/auth/auth-client.service";
 
 
 @Component({
@@ -39,69 +40,80 @@ import {v4 as uuidv4} from 'uuid';
     BigRedButtonComponent,
     PasswordInputComponent,
     ResendOtpCodeTimeCounterComponent,
-    OtpCodeNotReceivedButtonComponent
+    OtpCodeNotReceivedButtonComponent,
+    MatLabel,
+    MatStep,
+    MatStepLabel,
+    MatStepper,
+    MatStepperNext,
+    MatStepperPrevious
   ],
   template: `
-    <form *ngIf="!isTokenRequestSent" [formGroup]="formByEmail">
-      <div class="row mt-2">
-        <div class="col-md-12">
-          <mat-form-field appearance="fill">
-            <input matInput formControlName="email" type="email" placeholder="email">
-            <mat-hint *ngIf="formByEmail.controls['email'].touched">введите email</mat-hint>
-          </mat-form-field>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <bitruby-mat-input-password
-              [formControl]="password"
-          ></bitruby-mat-input-password>
-        </div>
-      </div>
-      <div class="row">
-        <bitruby-big-red-button-component
-            [diasble]="formByEmail.invalid"
-            [text]="'Продолжить'"
-            (outputAction)="generateOtpCode()"
-        ></bitruby-big-red-button-component>
-      </div>
-    </form>
-    <div *ngIf="isTokenRequestSent">
-      <bitruby-send-to-otp-code-button
-          [text]="'Код отправлен на почту'"
-          [sendTo]="formByEmail.value['email']"
-          [type]="'email'"
-          (buttonClicked)="returnToFormHandler()"
-      ></bitruby-send-to-otp-code-button>
-      <div class="row mt-2">
-        <bitruby-mat-input-otp
-            [form]="otpForm"
-            [title]="'Введите код из письма'"
-            (otpCompleted)="login()"
-        ></bitruby-mat-input-otp>
-      </div>
-      <div class="row">
-        <bitruby-resend-otp-code-time-counter
-            (buttonClicked)="resendOtpCode()"
-        ></bitruby-resend-otp-code-time-counter>
-      </div>
-      <div class="row mt-4">
-        <bitruby-otp-code-not-received-button
-            [text]="'Код не пришел'"
-        >
-        </bitruby-otp-code-not-received-button>
-      </div>
-    </div>
 
+    <mat-horizontal-stepper [linear]="true" #stepper>
+      <mat-step [stepControl]="form">
+        <form [formGroup]="form">
+          <div class="row mt-2">
+            <div class="col-md-12">
+              <mat-form-field appearance="fill">
+                <input matInput formControlName="email" type="email" placeholder="email">
+                <mat-hint *ngIf="form.controls['email'].touched">введите email</mat-hint>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <bitruby-mat-input-password
+                  [formControl]="password"
+              ></bitruby-mat-input-password>
+            </div>
+          </div>
+          <div class="row">
+            <bitruby-big-red-button-component
+                [diasble]="form.invalid"
+                [text]="'Продолжить'"
+                (outputAction)="generateOtpCode()"
+            ></bitruby-big-red-button-component>
+          </div>
+        </form>
+      </mat-step>
+      <mat-step [stepControl]="form">
+        <form [formGroup]="form">
+          <bitruby-send-to-otp-code-button
+              [text]="'Код отправлен на почту'"
+              [sendTo]="form.value['email']"
+              [type]="'email'"
+              (buttonClicked)="returnToFormHandler()"
+          ></bitruby-send-to-otp-code-button>
+          <div class="row mt-2">
+            <bitruby-mat-input-otp
+                [form]="form"
+                [title]="'Введите код из письма'"
+                (otpCompleted)="login()"
+            ></bitruby-mat-input-otp>
+          </div>
+          <div class="row">
+            <bitruby-resend-otp-code-time-counter
+                (buttonClicked)="resendOtpCode()"
+            ></bitruby-resend-otp-code-time-counter>
+          </div>
+          <div class="row mt-4">
+            <bitruby-otp-code-not-received-button
+                [text]="'Код не пришел'"
+            >
+            </bitruby-otp-code-not-received-button>
+          </div>
+        </form>
+      </mat-step>
+    </mat-horizontal-stepper>
   `,
   styles: [``]
 })
 export class LoginByEmailComponent {
 
-  formByEmail!: FormGroup;
-  isTokenRequestSent = false;
-  otpForm!: FormGroup;
+  form!: FormGroup;
 
+  @ViewChild('stepper') stepper!: MatStepper;
   @Output()
   otpCodeRequested: EventEmitter<boolean> = new EventEmitter<boolean>()
 
@@ -109,60 +121,52 @@ export class LoginByEmailComponent {
       private router: Router,
       private fb: FormBuilder,
       private cd: ChangeDetectorRef,
-      private loginService: LoginService,
       private otpService: OtpLoginService,
-      private _snackBar: MatSnackBar
+      private _snackBar: MatSnackBar,
+      private authClientService: AuthClientService
   ) {
-    this.formByEmail = this.fb.group({
+    this.form = this.fb.group({
       email: new FormControl(undefined, [Validators.required, Validators.email]),
       password: new FormControl(undefined, Validators.required),
     });
-    this.otpForm = this.fb.group([])
   }
 
   generateOtpCode(): void {
-    this.otpService.generateOtpCodeForLogin({
-      body: {
-        password: this.formByEmail.value.password,
-        grant_type: GrantType.EmailPassword,
-        sendTo: this.formByEmail.value.email
-      },
-      "x-request-id": uuidv4()
-    }).subscribe({
+    this.authClientService.generateOtpLogin(
+        this.form.value.email, this.form.value.password,GrantType.EmailPassword
+    ).subscribe({
       complete: () => {
-        this.isTokenRequestSent = true
         this.otpCodeRequested.emit(false)
+        this.stepper.next();
       },
       error: err => {
         this._snackBar.open(err.message, 'Close', {verticalPosition: 'top', direction: 'rtl'})
-
       }
     })
   }
 
   resendOtpCode(): void {
-    this.otpForm.reset()
+    this.form.controls['otp'].reset()
     this.generateOtpCode()
   }
 
   login() {
-    const arrayOtp = this.otpForm.controls['otp'] as FormArray<FormControl>
-    this.loginService.login(
-        this.formByEmail.value.email,
-        this.formByEmail.value.password,
-        GrantType.EmailPassword,
-        arrayOtp.controls.map(control => control.value).join('')
-    )
+    const arrayOtp = this.form.controls['otp'] as FormArray<FormControl>
+    this.authClientService.authorize(
+        this.form.value.email,
+        this.form.value.password,
+        arrayOtp.controls.map(control => control.value).join(''),
+        GrantType.EmailPassword
+    );
   }
 
   returnToFormHandler() {
-    this.isTokenRequestSent = false;
-    this.otpForm.reset()
+    this.form.controls['otp'].reset()
     this.otpCodeRequested.emit(true)
-
+    this.stepper.previous();
   }
 
   get password(): FormControl {
-    return this.formByEmail.controls['password'] as FormControl;
+    return this.form.controls['password'] as FormControl;
   }
 }

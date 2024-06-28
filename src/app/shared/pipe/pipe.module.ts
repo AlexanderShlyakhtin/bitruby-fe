@@ -2,12 +2,14 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {PhoneMaskPipe} from "./phone-mask-pipe";
 import {EmailMaskDisplayPipe} from "./email-mask-pipe";
+import {StatusTranslatePipe} from "./status-translate-pipe";
 
 
 @NgModule({
     declarations: [
         PhoneMaskPipe,
-        EmailMaskDisplayPipe
+        EmailMaskDisplayPipe,
+        StatusTranslatePipe
     ],
     imports: [
         CommonModule,
@@ -16,7 +18,8 @@ import {EmailMaskDisplayPipe} from "./email-mask-pipe";
     ],
     exports: [
         PhoneMaskPipe,
-        EmailMaskDisplayPipe
+        EmailMaskDisplayPipe,
+        StatusTranslatePipe
     ]
 })
 export class PipeModule {

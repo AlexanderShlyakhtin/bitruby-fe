@@ -1,15 +1,16 @@
 /* tslint:disable */
 /* eslint-disable */
-export interface Error {
+import { Base } from '../models/base';
+export type Error = Base & {
 
-  /**
-   * code of error
-   */
-  code?: string;
+/**
+ * code of error
+ */
+'code': string;
 
-  /**
-   * code of error
-   */
-  message?: string;
-  payload?: Array<string>;
-}
+/**
+ * code of error
+ */
+'message': string;
+'payload': Array<string>;
+};
