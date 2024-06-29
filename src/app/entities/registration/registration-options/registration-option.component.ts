@@ -150,7 +150,7 @@ import {AuthClientService} from "../../../core/auth/auth-client.service";
                     </div>
                     <div class="row">
                         <bitruby-resend-otp-code-time-counter
-                                (buttonClicked)="generateOtpCode()"
+                                (buttonClicked)="resendOtpToken()"
                         ></bitruby-resend-otp-code-time-counter>
                     </div>
                     <div class="row mt-4">
@@ -201,6 +201,10 @@ export class RegistrationOptionComponent {
         }, { validators: passwordsMatchValidator() });
     }
 
+    resendOtpToken(): void {
+        this.form.controls['otp'].reset()
+        this.generateOtpCode()
+    }
     generateOtpCode(): void {
         this.authClientService.generateOtpRegistration(
             this.form.controls['email'].value,
