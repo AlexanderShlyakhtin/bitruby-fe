@@ -112,14 +112,15 @@ export class AuthClientService {
             })
     }
 
-    getUserLevel(): Observable<string> {
-        let userLevel: string = '0';
+    getUserLevel(): Observable<string | null> {
+        let userLevel: string | null = null;
         try {
-            const payload = this.getAccessTokenFromStorage()!.split('.')[1];
-            const decodedPayload = this.base64UrlDecode(payload);
-            const parse = JSON.parse(decodedPayload);
-            userLevel = parse?.level;
-
+            if(!this.getAccessTokenFromStorage() !== null) {
+                const payload = this.getAccessTokenFromStorage()!.split('.')[1];
+                const decodedPayload = this.base64UrlDecode(payload);
+                const parse = JSON.parse(decodedPayload);
+                userLevel = parse?.level;
+            }
         } catch (error) {
             console.error('Invalid JWT token', error);
         }
