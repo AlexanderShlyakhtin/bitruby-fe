@@ -1,13 +1,13 @@
 /* tslint:disable */
 /* eslint-disable */
-import { HttpClient, HttpContext, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { StrictHttpResponse } from '../../strict-http-response';
-import { RequestBuilder } from '../../request-builder';
+import {HttpClient, HttpContext, HttpResponse} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {filter, map} from 'rxjs/operators';
+import {StrictHttpResponse} from '../../strict-http-response';
+import {RequestBuilder} from '../../request-builder';
 
-import { Base } from '../../models/base';
-import { UserForm } from '../../models/user-form';
+import {Base} from '../../models/base';
+import {UserForm} from '../../models/user-form';
 
 export interface ApplyUserForm$Params {
   'x-request-id': string;

@@ -1,19 +1,24 @@
 /* tslint:disable */
 /* eslint-disable */
-import { HttpClient, HttpContext } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import {HttpClient, HttpContext} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 
-import { BaseService } from '../base-service';
-import { ApiConfiguration } from '../api-configuration';
-import { StrictHttpResponse } from '../strict-http-response';
+import {BaseService} from '../base-service';
+import {ApiConfiguration} from '../api-configuration';
+import {StrictHttpResponse} from '../strict-http-response';
 
-import { Base } from '../models/base';
-import { checkOtpCodeForRestoringPassword } from '../fn/otp-restore-password/check-otp-code-for-restoring-password';
-import { CheckOtpCodeForRestoringPassword$Params } from '../fn/otp-restore-password/check-otp-code-for-restoring-password';
-import { generateOtpCodeForRestoringPassword } from '../fn/otp-restore-password/generate-otp-code-for-restoring-password';
-import { GenerateOtpCodeForRestoringPassword$Params } from '../fn/otp-restore-password/generate-otp-code-for-restoring-password';
+import {Base} from '../models/base';
+import {
+  checkOtpCodeForRestoringPassword,
+  CheckOtpCodeForRestoringPassword$Params
+} from '../fn/otp-restore-password/check-otp-code-for-restoring-password';
+import {
+  generateOtpCodeForRestoringPassword,
+  GenerateOtpCodeForRestoringPassword$Params
+} from '../fn/otp-restore-password/generate-otp-code-for-restoring-password';
+import {RestorePasswordRequestOtpResult} from '../models/restore-password-request-otp-result';
 
 @Injectable({ providedIn: 'root' })
 export class OtpRestorePasswordService extends BaseService {
@@ -34,7 +39,7 @@ export class OtpRestorePasswordService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  generateOtpCodeForRestoringPassword$Response(params: GenerateOtpCodeForRestoringPassword$Params, context?: HttpContext): Observable<StrictHttpResponse<Base>> {
+  generateOtpCodeForRestoringPassword$Response(params: GenerateOtpCodeForRestoringPassword$Params, context?: HttpContext): Observable<StrictHttpResponse<RestorePasswordRequestOtpResult>> {
     return generateOtpCodeForRestoringPassword(this.http, this.rootUrl, params, context);
   }
 
@@ -48,9 +53,9 @@ export class OtpRestorePasswordService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  generateOtpCodeForRestoringPassword(params: GenerateOtpCodeForRestoringPassword$Params, context?: HttpContext): Observable<Base> {
+  generateOtpCodeForRestoringPassword(params: GenerateOtpCodeForRestoringPassword$Params, context?: HttpContext): Observable<RestorePasswordRequestOtpResult> {
     return this.generateOtpCodeForRestoringPassword$Response(params, context).pipe(
-      map((r: StrictHttpResponse<Base>): Base => r.body)
+      map((r: StrictHttpResponse<RestorePasswordRequestOtpResult>): RestorePasswordRequestOtpResult => r.body)
     );
   }
 

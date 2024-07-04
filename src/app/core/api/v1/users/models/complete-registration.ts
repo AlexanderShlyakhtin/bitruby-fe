@@ -3,8 +3,7 @@
 import {Id} from '../models/id';
 import {Otp} from '../models/otp';
 
-export type RestorePassword = {
+export type CompleteRegistration = {
+'registrationId': Id;
 'otp': Otp;
-'password': string;
-'restorePasswordId': Id;
 };

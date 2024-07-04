@@ -3,7 +3,6 @@ import {HttpInterceptorFn} from "@angular/common/http";
 import {Buffer} from "buffer";
 import {environment} from "../../../environments/environment.development";
 import {AuthClientService} from "../auth/auth-client.service";
-import {from, switchMap} from "rxjs";
 
 export const tokenInterceptor: HttpInterceptorFn = (request, next) => {
     const authService = inject(AuthClientService);

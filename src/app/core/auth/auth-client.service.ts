@@ -1,20 +1,23 @@
 import {Injectable} from '@angular/core';
-import {AuthService} from "../api/v1/auth/services/auth.service";
 import {authConfigModule} from "./auth-config.module";
-import {GrantType} from "../api/v1/auth/models/grant-type";
 import {Router} from "@angular/router";
 import {Observable, of} from "rxjs";
-import {Token} from "../api/v1/auth/models/token";
 import {v4 as uuidv4} from "uuid";
-import {OtpLoginService} from "../api/v1/users/services/otp-login.service";
-import {Base, GrantType as GrantTypeUsers} from "../api/v1/users/models";
-import {OtpRegistrationService} from "../api/v1/users/services/otp-registration.service";
-import {UsersService} from "../api/v1/users/services/users.service";
-import {OtpRestorePasswordService} from "../api/v1/users/services/otp-restore-password.service";
+
 import {SessionStorageService} from "../services/session-storage.service";
 import {ACCESS_TOKEN, EXPIRES_IN, REFRESH_TOKEN} from "../../app.constants";
+import {AuthService} from "../api/v1/auth/services/auth.service";
+import {OtpLoginService} from "../api/v1/users/services/otp-login.service";
+import {UsersService} from "../api/v1/users/services/users.service";
+import {OtpRestorePasswordService} from "../api/v1/users/services/otp-restore-password.service";
+import {OtpRegistrationService} from "../api/v1/users/services/otp-registration.service";
+import {Token} from "../api/v1/auth/models/token";
+import {GenerateOtpCodeLoginResult} from "../api/v1/users/models/generate-otp-code-login-result";
+import {GrantType as GrantTypeAuth} from "../api/v1/auth/models/grant-type";
+import {GrantType as GrantTypeUsers} from "../api/v1/users/models/grant-type";
+import {Base} from "../api/v1/users/models/base";
+import {RestorePasswordRequestOtpResult} from "../api/v1/users/models/restore-password-request-otp-result";
 import {IntrospectToken} from "../api/v1/auth/models/introspect-token";
-import {map} from "rxjs/operators";
 
 @Injectable({
     providedIn: 'root'
@@ -46,7 +49,7 @@ export class AuthClientService {
         this.silentRenew = authConfigModule.silentRenew;
     }
 
-    authorize(userName: string, password: string, otp: string, grantType: GrantType): void {
+    authorize(userName: string, password: string, otp: string, loginId: string, grantType: GrantTypeAuth): void {
         this.authService.getTokenByUserPassword(
             {
                 body: {
@@ -55,13 +58,14 @@ export class AuthClientService {
                     password: password,
                     username: userName,
                     grant_type: grantType,
+                    loginId: loginId
                 }
             }
         ).subscribe({
-            next: value => {
+            next: (value: Token) => {
                 this.setToken(value);
             },
-            error: err => {
+            error: (err: Error) => {
                 console.error("Error occurs while trying authorize the user: ", err);
             },
             complete: () => {
@@ -70,7 +74,7 @@ export class AuthClientService {
         })
     }
 
-    generateOtpLogin(username: string, password: string, grantType: GrantTypeUsers): Observable<Base> {
+    generateOtpLogin(username: string, password: string, grantType: GrantTypeUsers): Observable<GenerateOtpCodeLoginResult> {
         return this.otpService.generateOtpCodeForLogin({body: {
                 sendTo: username,
                 password: password,
@@ -79,15 +83,14 @@ export class AuthClientService {
         })
     }
 
-    generateOtpRegistration(username: string, grantType: GrantTypeUsers): Observable<Base> {
+    generateOtpRegistration(registrationId: string): Observable<Base> {
         return this.otpServiceRegistration.generateOtpCodeForRegistration({body: {
-                sendTo: username,
-                grant_type: grantType,
+                registrationId: registrationId,
             }, "x-request-id": uuidv4()
         })
     }
 
-    generateOtpRestorePassword(username: string, grantType: GrantTypeUsers): Observable<Base> {
+    generateOtpRestorePassword(username: string, grantType: GrantTypeUsers): Observable<RestorePasswordRequestOtpResult> {
         return this.otpServiceRestore.generateOtpCodeForRestoringPassword({body: {
                 sendTo: username,
                 grant_type: grantType,
@@ -99,14 +102,14 @@ export class AuthClientService {
         this.authService.getTokenByUserPassword({
             body: {
                 refresh_token: this.sessionStorageService.getItem(REFRESH_TOKEN),
-                grant_type: GrantType.RefreshToken
+                grant_type: GrantTypeAuth.RefreshToken
         }
             })
             .subscribe({
-                next: value => {
+                next: (value: Token) => {
                     this.setToken(value);
                 },
-                error: err => {
+                error: (err: Error) => {
                     console.error("Error occurs while trying refresh access token: ", err);
                 },
             })

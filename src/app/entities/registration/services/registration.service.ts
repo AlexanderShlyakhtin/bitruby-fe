@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
-import {UsersService} from "../../../core/api/v1/users/services/users.service";
 import {Observable} from "rxjs";
-import {OtpCodeCheck} from "../../../core/api/v1/users/models/otp-code-check";
-import {NewUser} from "../../../core/api/v1/users/models/new-user";
 import {v4 as uuidv4} from 'uuid';
+import {RegisterNewUserResult} from "../../../core/api/v1/users/models/register-new-user-result";
+import {CompleteRegistration} from "../../../core/api/v1/users/models/complete-registration";
+import {UsersService} from "../../../core/api/v1/users/services/users.service";
+import {NewUser} from "../../../core/api/v1/users/models/new-user";
 import {Base} from "../../../core/api/v1/users/models/base";
 
 @Injectable({
@@ -15,11 +16,11 @@ export class RegistrationService {
       private userService: UsersService
   ) { }
 
-  registerNewUser(body: NewUser): Observable<Base> {
+  registerNewUser(body: NewUser): Observable<RegisterNewUserResult> {
     return this.userService.registerUser({body: body, "x-request-id": uuidv4()})
   }
 
-  completeRegistration(body: OtpCodeCheck): Observable<Base> {
+  completeRegistration(body: CompleteRegistration): Observable<Base> {
     return this.userService.completeRegistration({body: body, "x-request-id": uuidv4()});
   }
 

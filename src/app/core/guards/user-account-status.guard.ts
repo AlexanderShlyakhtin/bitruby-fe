@@ -1,4 +1,4 @@
-import {CanActivateFn, GuardResult, Router, UrlTree} from '@angular/router';
+import {CanActivateFn, Router} from '@angular/router';
 import {AuthClientService} from "../auth/auth-client.service";
 import {inject} from "@angular/core";
 import {map} from "rxjs/operators";
@@ -12,7 +12,7 @@ export const userAccountStatusGuard: CanActivateFn = (route, state) => {
             if (value !== null) {
                 return true
             } else {
-                router.createUrlTree(['/']);
+                router.createUrlTree(['/account/welcome']);
                 return false;
             }
         })

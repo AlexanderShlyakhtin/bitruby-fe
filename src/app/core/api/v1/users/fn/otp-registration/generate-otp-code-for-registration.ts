@@ -1,13 +1,13 @@
 /* tslint:disable */
 /* eslint-disable */
-import { HttpClient, HttpContext, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { StrictHttpResponse } from '../../strict-http-response';
-import { RequestBuilder } from '../../request-builder';
+import {HttpClient, HttpContext, HttpResponse} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {filter, map} from 'rxjs/operators';
+import {StrictHttpResponse} from '../../strict-http-response';
+import {RequestBuilder} from '../../request-builder';
 
-import { Base } from '../../models/base';
-import { OtpCode } from '../../models/otp-code';
+import {Base} from '../../models/base';
+import {GenerateOtpCodeRegistration} from '../../models/generate-otp-code-registration';
 
 export interface GenerateOtpCodeForRegistration$Params {
   'x-request-id': string;
@@ -15,7 +15,7 @@ export interface GenerateOtpCodeForRegistration$Params {
     /**
      * Generate OTP token for user registration
      */
-    body?: OtpCode
+    body?: GenerateOtpCodeRegistration
 }
 
 export function generateOtpCodeForRegistration(http: HttpClient, rootUrl: string, params: GenerateOtpCodeForRegistration$Params, context?: HttpContext): Observable<StrictHttpResponse<Base>> {

@@ -1,26 +1,22 @@
 /* tslint:disable */
 /* eslint-disable */
-import { HttpClient, HttpContext } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import {HttpClient, HttpContext} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 
-import { BaseService } from '../base-service';
-import { ApiConfiguration } from '../api-configuration';
-import { StrictHttpResponse } from '../strict-http-response';
+import {BaseService} from '../base-service';
+import {ApiConfiguration} from '../api-configuration';
+import {StrictHttpResponse} from '../strict-http-response';
 
-import { applyUserForm } from '../fn/users/apply-user-form';
-import { ApplyUserForm$Params } from '../fn/users/apply-user-form';
-import { Base } from '../models/base';
-import { completeRegistration } from '../fn/users/complete-registration';
-import { CompleteRegistration$Params } from '../fn/users/complete-registration';
-import { getUserVerificationData } from '../fn/users/get-user-verification-data';
-import { GetUserVerificationData$Params } from '../fn/users/get-user-verification-data';
-import { registerUser } from '../fn/users/register-user';
-import { RegisterUser$Params } from '../fn/users/register-user';
-import { restorePassword } from '../fn/users/restore-password';
-import { RestorePassword$Params } from '../fn/users/restore-password';
-import { UserVerification } from '../models/user-verification';
+import {applyUserForm, ApplyUserForm$Params} from '../fn/users/apply-user-form';
+import {Base} from '../models/base';
+import {completeRegistration, CompleteRegistration$Params} from '../fn/users/complete-registration';
+import {getUserVerificationData, GetUserVerificationData$Params} from '../fn/users/get-user-verification-data';
+import {RegisterNewUserResult} from '../models/register-new-user-result';
+import {registerUser, RegisterUser$Params} from '../fn/users/register-user';
+import {restorePassword, RestorePassword$Params} from '../fn/users/restore-password';
+import {UserVerification} from '../models/user-verification';
 
 @Injectable({ providedIn: 'root' })
 export class UsersService extends BaseService {
@@ -41,7 +37,7 @@ export class UsersService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  registerUser$Response(params: RegisterUser$Params, context?: HttpContext): Observable<StrictHttpResponse<Base>> {
+  registerUser$Response(params: RegisterUser$Params, context?: HttpContext): Observable<StrictHttpResponse<RegisterNewUserResult>> {
     return registerUser(this.http, this.rootUrl, params, context);
   }
 
@@ -55,9 +51,9 @@ export class UsersService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  registerUser(params: RegisterUser$Params, context?: HttpContext): Observable<Base> {
+  registerUser(params: RegisterUser$Params, context?: HttpContext): Observable<RegisterNewUserResult> {
     return this.registerUser$Response(params, context).pipe(
-      map((r: StrictHttpResponse<Base>): Base => r.body)
+      map((r: StrictHttpResponse<RegisterNewUserResult>): RegisterNewUserResult => r.body)
     );
   }
 

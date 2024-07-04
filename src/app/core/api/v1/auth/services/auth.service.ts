@@ -1,20 +1,18 @@
 /* tslint:disable */
 /* eslint-disable */
-import { HttpClient, HttpContext } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import {HttpClient, HttpContext} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 
-import { BaseService } from '../base-service';
-import { ApiConfiguration } from '../api-configuration';
-import { StrictHttpResponse } from '../strict-http-response';
+import {BaseService} from '../base-service';
+import {ApiConfiguration} from '../api-configuration';
+import {StrictHttpResponse} from '../strict-http-response';
 
-import { getTokenByUserPassword } from '../fn/auth/get-token-by-user-password';
-import { GetTokenByUserPassword$Params } from '../fn/auth/get-token-by-user-password';
-import { introspectAccessToken } from '../fn/auth/introspect-access-token';
-import { IntrospectAccessToken$Params } from '../fn/auth/introspect-access-token';
-import { IntrospectToken } from '../models/introspect-token';
-import { Token } from '../models/token';
+import {getTokenByUserPassword, GetTokenByUserPassword$Params} from '../fn/auth/get-token-by-user-password';
+import {introspectAccessToken, IntrospectAccessToken$Params} from '../fn/auth/introspect-access-token';
+import {IntrospectToken} from '../models/introspect-token';
+import {Token} from '../models/token';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService extends BaseService {

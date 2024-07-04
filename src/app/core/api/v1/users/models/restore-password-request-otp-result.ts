@@ -1,10 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
+import {Base} from '../models/base';
 import {Id} from '../models/id';
-import {Otp} from '../models/otp';
 
-export type RestorePassword = {
-'otp': Otp;
-'password': string;
+export type RestorePasswordRequestOtpResult = Base & {
 'restorePasswordId': Id;
 };

@@ -1,13 +1,13 @@
 /* tslint:disable */
 /* eslint-disable */
-import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
+import {ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {ApiConfiguration, ApiConfigurationParams} from './api-configuration';
 
-import { UsersService } from './services/users.service';
-import { OtpLoginService } from './services/otp-login.service';
-import { OtpRegistrationService } from './services/otp-registration.service';
-import { OtpRestorePasswordService } from './services/otp-restore-password.service';
+import {UsersService} from './services/users.service';
+import {OtpLoginService} from './services/otp-login.service';
+import {OtpRegistrationService} from './services/otp-registration.service';
+import {OtpRestorePasswordService} from './services/otp-restore-password.service';
 
 /**
  * Module that provides all services and configuration.

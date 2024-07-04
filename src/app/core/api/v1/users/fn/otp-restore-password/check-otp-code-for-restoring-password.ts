@@ -1,13 +1,13 @@
 /* tslint:disable */
 /* eslint-disable */
-import { HttpClient, HttpContext, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { StrictHttpResponse } from '../../strict-http-response';
-import { RequestBuilder } from '../../request-builder';
+import {HttpClient, HttpContext, HttpResponse} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {filter, map} from 'rxjs/operators';
+import {StrictHttpResponse} from '../../strict-http-response';
+import {RequestBuilder} from '../../request-builder';
 
-import { Base } from '../../models/base';
-import { OtpCodeRestorePassword } from '../../models/otp-code-restore-password';
+import {Base} from '../../models/base';
+import {OtpCodeRestorePassword} from '../../models/otp-code-restore-password';
 
 export interface CheckOtpCodeForRestoringPassword$Params {
   'x-request-id': string;

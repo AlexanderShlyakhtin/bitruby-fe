@@ -1,13 +1,13 @@
 /* tslint:disable */
 /* eslint-disable */
-import { HttpClient, HttpContext, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { StrictHttpResponse } from '../../strict-http-response';
-import { RequestBuilder } from '../../request-builder';
+import {HttpClient, HttpContext, HttpResponse} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {filter, map} from 'rxjs/operators';
+import {StrictHttpResponse} from '../../strict-http-response';
+import {RequestBuilder} from '../../request-builder';
 
-import { Base } from '../../models/base';
-import { OtpCodeCheck } from '../../models/otp-code-check';
+import {Base} from '../../models/base';
+import {CompleteRegistration} from '../../models/complete-registration';
 
 export interface CompleteRegistration$Params {
   'x-request-id': string;
@@ -15,7 +15,7 @@ export interface CompleteRegistration$Params {
     /**
      * Generate OTP token for user login
      */
-    body?: OtpCodeCheck
+    body?: CompleteRegistration
 }
 
 export function completeRegistration(http: HttpClient, rootUrl: string, params: CompleteRegistration$Params, context?: HttpContext): Observable<StrictHttpResponse<Base>> {

@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { UsersService } from "../../../core/api/v1/users/services/users.service";
-import { v4 as uuidv4 } from "uuid";
-import { UserForm } from "../../../core/api/v1/users/models/user-form";
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatInputModule } from "@angular/material/input";
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {UsersService} from "../../../core/api/v1/users/services/users.service";
+import {v4 as uuidv4} from "uuid";
+import {UserForm} from "../../../core/api/v1/users/models/user-form";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
 import {NgClass, NgIf} from "@angular/common";
-import { BigRedButtonComponent } from "../../../shared/buttons/big-red-button.component";
-import { VerificationStatus } from "../../../core/api/v1/users/models/verification-status";
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatChipsModule } from '@angular/material/chips';
+import {BigRedButtonComponent} from "../../../shared/buttons/big-red-button.component";
+import {VerificationStatus} from "../../../core/api/v1/users/models/verification-status";
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatChipsModule} from '@angular/material/chips';
 import {PipeModule} from "../../../shared/pipe/pipe.module";
 
 @Component({

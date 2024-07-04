@@ -5,7 +5,7 @@
     "ng": "ng",
     "generate:user-api": "ng-openapi-gen --input ./src/assets/swaggers/bitruby-users-swagger.yaml --output src/app/core/api/v1/users",
     "generate:auth-api": "ng-openapi-gen --input ./src/assets/swaggers/bitruby-auth-swagger.yaml --output src/app/core/api/v1/auth",
-    "start": "ng serve --host 127.0.0.1 --port 4200",
+    "start": "ng serve --port 4200",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"

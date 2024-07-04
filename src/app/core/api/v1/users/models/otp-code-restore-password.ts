@@ -1,7 +1,9 @@
 /* tslint:disable */
 /* eslint-disable */
-import { Otp } from '../models/otp';
-import { OtpCode } from '../models/otp-code';
-export type OtpCodeRestorePassword = OtpCode & {
+import {Id} from '../models/id';
+import {Otp} from '../models/otp';
+
+export type OtpCodeRestorePassword = {
 'otp': Otp;
+'restorePasswordId': Id;
 };

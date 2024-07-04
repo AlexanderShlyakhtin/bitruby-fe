@@ -22,7 +22,7 @@ export const routes: Routes = [
     {
         path: 'account',
         loadChildren: () => import('./entities/account/account.module').then(m => m.AccountModule),
-        canActivate: [ authGuard, userAccountStatusGuard ]
+        canActivate: [ userAccountStatusGuard ]
     },
     {
         path: 'info',

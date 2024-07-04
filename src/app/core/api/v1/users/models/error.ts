@@ -1,6 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
-import { Base } from '../models/base';
+import {Base} from '../models/base';
+
 export type Error = Base & {
 
 /**

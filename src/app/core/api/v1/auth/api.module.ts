@@ -1,10 +1,10 @@
 /* tslint:disable */
 /* eslint-disable */
-import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
+import {ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {ApiConfiguration, ApiConfigurationParams} from './api-configuration';
 
-import { AuthService } from './services/auth.service';
+import {AuthService} from './services/auth.service';
 
 /**
  * Module that provides all services and configuration.

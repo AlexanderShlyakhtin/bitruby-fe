@@ -15,10 +15,10 @@ import {OtpCodeNotReceivedButtonComponent} from "../../../shared/components/otp-
 import {OtpInputComponent} from "../../../shared/inputs/otp-input.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {AVALIABLE_COUNTRY_CODES} from "../../../app.constants";
-import {OtpLoginService} from "../../../core/api/v1/users/services/otp-login.service";
 import {AuthClientService} from "../../../core/auth/auth-client.service";
 import {MatStep, MatStepper} from "@angular/material/stepper";
-import {GrantType} from "../../../core/api/v1/users/models/grant-type";
+import {OtpLoginService} from "../../../core/api/v1/users/services/otp-login.service";
+import { GrantType } from '../../../core/api/v1/auth/models/grant-type';
 
 
 @Component({
@@ -129,6 +129,7 @@ export class LoginByPhoneComponent {
   otpCodeRequested: EventEmitter<boolean> = new EventEmitter<boolean>()
 
   countryCodes = AVALIABLE_COUNTRY_CODES;
+  loginId: string | undefined = undefined;
 
   constructor(
       private router: Router,
@@ -152,6 +153,7 @@ export class LoginByPhoneComponent {
         this.getFormatedPhoneNumber(),
         this.form.value.password,
         arrayOtp.controls.map(control => control.value).join(''),
+        this.loginId!,
         GrantType.PhonePassword
     )
   }
@@ -160,6 +162,9 @@ export class LoginByPhoneComponent {
     this.authClientService.generateOtpLogin(
         this.getFormatedPhoneNumber(), this.form.value.password, GrantType.PhonePassword
     ).subscribe({
+      next: value => {
+        this.loginId = value.loginId;
+      },
       complete: () => {
         this.otpCodeRequested.emit(false)
         this.stepper.next();

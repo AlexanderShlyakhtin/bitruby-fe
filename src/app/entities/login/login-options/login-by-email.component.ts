@@ -6,7 +6,6 @@ import {MatInput} from "@angular/material/input";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {MatButton, MatIconButton} from "@angular/material/button";
 import {MatIcon} from "@angular/material/icon";
-import {GrantType} from "../../../core/api/v1/users/models/grant-type";
 import {OtpInputComponent} from "../../../shared/inputs/otp-input.component";
 import {SendToOtpCodeButtonComponent} from "../../../shared/components/send-to-otp-code-button.component";
 import {BigRedButtonComponent} from "../../../shared/buttons/big-red-button.component";
@@ -14,10 +13,11 @@ import {PasswordInputComponent} from "../../../shared/inputs/password-input.comp
 import {ResendOtpCodeTimeCounterComponent} from "../../../shared/components/resend-otp-code-time-counter.component";
 import {OtpCodeNotReceivedButtonComponent} from "../../../shared/components/otp-code-not-received-button.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {OtpLoginService} from "../../../core/api/v1/users/services/otp-login.service";
-import {v4 as uuidv4} from 'uuid';
 import {MatStep, MatStepLabel, MatStepper, MatStepperNext, MatStepperPrevious} from "@angular/material/stepper";
 import {AuthClientService} from "../../../core/auth/auth-client.service";
+import {Id} from "../../../core/api/v1/users/models/id";
+import {GrantType} from "../../../core/api/v1/users/models";
+import {OtpLoginService} from "../../../core/api/v1/users/services/otp-login.service";
 
 
 @Component({
@@ -116,6 +116,7 @@ export class LoginByEmailComponent {
   @ViewChild('stepper') stepper!: MatStepper;
   @Output()
   otpCodeRequested: EventEmitter<boolean> = new EventEmitter<boolean>()
+  loginId: string | undefined = undefined;
 
   constructor(
       private router: Router,
@@ -133,8 +134,11 @@ export class LoginByEmailComponent {
 
   generateOtpCode(): void {
     this.authClientService.generateOtpLogin(
-        this.form.value.email, this.form.value.password,GrantType.EmailPassword
+        this.form.value.email, this.form.value.password, GrantType.EmailPassword
     ).subscribe({
+      next: value => {
+        this.loginId = value.loginId;
+      },
       complete: () => {
         this.otpCodeRequested.emit(false)
         this.stepper.next();
@@ -156,6 +160,7 @@ export class LoginByEmailComponent {
         this.form.value.email,
         this.form.value.password,
         arrayOtp.controls.map(control => control.value).join(''),
+        this.loginId!,
         GrantType.EmailPassword
     );
   }

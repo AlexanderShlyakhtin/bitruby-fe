@@ -1,17 +1,16 @@
 /* tslint:disable */
 /* eslint-disable */
-import { HttpClient, HttpContext } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import {HttpClient, HttpContext} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 
-import { BaseService } from '../base-service';
-import { ApiConfiguration } from '../api-configuration';
-import { StrictHttpResponse } from '../strict-http-response';
+import {BaseService} from '../base-service';
+import {ApiConfiguration} from '../api-configuration';
+import {StrictHttpResponse} from '../strict-http-response';
 
-import { Base } from '../models/base';
-import { generateOtpCodeForLogin } from '../fn/otp-login/generate-otp-code-for-login';
-import { GenerateOtpCodeForLogin$Params } from '../fn/otp-login/generate-otp-code-for-login';
+import {generateOtpCodeForLogin, GenerateOtpCodeForLogin$Params} from '../fn/otp-login/generate-otp-code-for-login';
+import {GenerateOtpCodeLoginResult} from '../models/generate-otp-code-login-result';
 
 @Injectable({ providedIn: 'root' })
 export class OtpLoginService extends BaseService {
@@ -32,7 +31,7 @@ export class OtpLoginService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  generateOtpCodeForLogin$Response(params: GenerateOtpCodeForLogin$Params, context?: HttpContext): Observable<StrictHttpResponse<Base>> {
+  generateOtpCodeForLogin$Response(params: GenerateOtpCodeForLogin$Params, context?: HttpContext): Observable<StrictHttpResponse<GenerateOtpCodeLoginResult>> {
     return generateOtpCodeForLogin(this.http, this.rootUrl, params, context);
   }
 
@@ -46,9 +45,9 @@ export class OtpLoginService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  generateOtpCodeForLogin(params: GenerateOtpCodeForLogin$Params, context?: HttpContext): Observable<Base> {
+  generateOtpCodeForLogin(params: GenerateOtpCodeForLogin$Params, context?: HttpContext): Observable<GenerateOtpCodeLoginResult> {
     return this.generateOtpCodeForLogin$Response(params, context).pipe(
-      map((r: StrictHttpResponse<Base>): Base => r.body)
+      map((r: StrictHttpResponse<GenerateOtpCodeLoginResult>): GenerateOtpCodeLoginResult => r.body)
     );
   }
 

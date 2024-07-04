@@ -16,7 +16,6 @@ import {MatInput} from "@angular/material/input";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {MatButton, MatIconButton} from "@angular/material/button";
 import {MatIcon, MatIconModule} from "@angular/material/icon";
-import {GrantType} from "../../../core/api/v1/users/models/grant-type";
 import {OtpInputComponent} from "../../../shared/inputs/otp-input.component";
 import {BigRedButtonComponent} from "../../../shared/buttons/big-red-button.component";
 import {SendToOtpCodeButtonComponent} from '../../../shared/components/send-to-otp-code-button.component';
@@ -26,14 +25,13 @@ import {PasswordInputComponent} from "../../../shared/inputs/password-input.comp
 import {ResendOtpCodeTimeCounterComponent} from "../../../shared/components/resend-otp-code-time-counter.component";
 import {OtpCodeNotReceivedButtonComponent} from "../../../shared/components/otp-code-not-received-button.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {AVALIABLE_COUNTRY_CODES, PATTERN_ONY_NUMBERS} from "../../../app.constants";
+import {AVALIABLE_COUNTRY_CODES} from "../../../app.constants";
 import {MatOption} from "@angular/material/autocomplete";
 import {MatSelect} from "@angular/material/select";
 import {SharedModule} from "../../../shared/shared.module";
-import {OtpRegistrationService} from "../../../core/api/v1/users/services/otp-registration.service";
-import {v4 as uuidv4} from 'uuid';
 import {MatStep, MatStepper} from "@angular/material/stepper";
 import {AuthClientService} from "../../../core/auth/auth-client.service";
+import {GrantType} from "../../../core/api/v1/auth/models";
 
 
 @Component({
@@ -182,6 +180,7 @@ export class RegistrationOptionComponent {
     @ViewChild('stepper') stepper!: MatStepper;
     @Output()
     otpCodeRequested: EventEmitter<boolean> = new EventEmitter<boolean>()
+    registrationId: string | undefined = undefined;
 
     constructor(
         private router: Router,
@@ -207,8 +206,7 @@ export class RegistrationOptionComponent {
     }
     generateOtpCode(): void {
         this.authClientService.generateOtpRegistration(
-            this.form.controls['email'].value,
-            GrantType.EmailPassword
+            this.registrationId!,
         )
             .subscribe({
                 complete: () => {
@@ -234,6 +232,9 @@ export class RegistrationOptionComponent {
             password: this.form.value.password,
         })
             .subscribe({
+                next: value => {
+                    this.registrationId = value.registrationId;
+                },
                 complete: () => {
                     this.generateOtpCode();
                 },
@@ -249,10 +250,8 @@ export class RegistrationOptionComponent {
 
     completeRegistration(): void {
         const arrayOtp = this.form.controls['otp'] as FormArray<FormControl>
-
         this.registrationService.completeRegistration({
-            grant_type: GrantType.EmailPassword,
-            sendTo: this.form.value.email,
+            registrationId: this.registrationId!,
             otp: arrayOtp.controls.map(control => control.value).join('')
         })
             .subscribe({
@@ -268,7 +267,6 @@ export class RegistrationOptionComponent {
     getFormatedPhoneNumber(): string {
         return this.form.value.countryCode + this.form.value.number.replace(/[^+\d]/g, '');
     }
-
 }
 
 export function passwordsMatchValidator(): ValidatorFn {
