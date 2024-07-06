@@ -167,7 +167,7 @@ export class RestorePasswordByEmailComponent {
         this.authClientService.generateOtpRestorePassword(this.form.controls['email'].value, GrantType.EmailPassword)
             .subscribe({
                 next: value => {
-
+                    this.restorePasswordId = value.restorePasswordId
                 },
                 complete: () => {
                     this.stepper.next();
