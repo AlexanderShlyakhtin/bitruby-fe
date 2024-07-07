@@ -1,5 +1,4 @@
 import {Routes} from '@angular/router';
-import {authGuard} from "./core/guards/auth.guard";
 import {userAccountStatusGuard} from "./core/guards/user-account-status.guard";
 
 export const routes: Routes = [

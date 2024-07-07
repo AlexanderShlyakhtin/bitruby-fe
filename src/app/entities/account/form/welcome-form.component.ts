@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {UsersService} from "../../../core/api/v1/users/services/users.service";
 import {v4 as uuidv4} from "uuid";
 import {UserForm} from "../../../core/api/v1/users/models/user-form";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -11,6 +10,7 @@ import {VerificationStatus} from "../../../core/api/v1/users/models/verification
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatChipsModule} from '@angular/material/chips';
 import {PipeModule} from "../../../shared/pipe/pipe.module";
+import {VerificationService} from "../../../core/api/v1/users/services/verification.service";
 
 @Component({
   selector: 'bitruby-init-form',
@@ -128,7 +128,7 @@ export class WelcomeFormComponent implements OnInit {
 
   constructor(
       private fb: FormBuilder,
-      private usersService: UsersService
+      private verificationService: VerificationService
   ) {
     this.form = this.fb.group({
       firstName: new FormControl('', Validators.required),
@@ -142,7 +142,7 @@ export class WelcomeFormComponent implements OnInit {
   }
 
   getUserSession(): void {
-    this.usersService.getUserVerificationData({ "x-request-id": uuidv4() })
+    this.verificationService.getUserVerificationData({ "x-request-id": uuidv4() })
         .subscribe({
           next: value => {
             this.userForm = value.user;
@@ -158,7 +158,7 @@ export class WelcomeFormComponent implements OnInit {
   applyUserForm(): void {
     if (this.form.invalid) return;
 
-    this.usersService.applyUserForm({
+    this.verificationService.applyUserForm({
       "x-request-id": uuidv4(),
       body: this.form.value
     })

@@ -9,6 +9,7 @@ import {RequestBuilder} from '../../request-builder';
 import {IntrospectToken} from '../../models/introspect-token';
 
 export interface IntrospectAccessToken$Params {
+  'x-request-id': string;
   
     /**
      * Get token by grant type and password
@@ -18,9 +19,10 @@ export interface IntrospectAccessToken$Params {
 }
 }
 
-export function introspectAccessToken(http: HttpClient, rootUrl: string, params?: IntrospectAccessToken$Params, context?: HttpContext): Observable<StrictHttpResponse<IntrospectToken>> {
+export function introspectAccessToken(http: HttpClient, rootUrl: string, params: IntrospectAccessToken$Params, context?: HttpContext): Observable<StrictHttpResponse<IntrospectToken>> {
   const rb = new RequestBuilder(rootUrl, introspectAccessToken.PATH, 'post');
   if (params) {
+    rb.header('x-request-id', params['x-request-id'], {});
     rb.body(params.body, 'multipart/form-data');
   }
 

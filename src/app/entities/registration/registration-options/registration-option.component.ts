@@ -19,7 +19,7 @@ import {MatIcon, MatIconModule} from "@angular/material/icon";
 import {OtpInputComponent} from "../../../shared/inputs/otp-input.component";
 import {BigRedButtonComponent} from "../../../shared/buttons/big-red-button.component";
 import {SendToOtpCodeButtonComponent} from '../../../shared/components/send-to-otp-code-button.component';
-import {RegistrationService} from "../services/registration.service";
+import {RegistrationProxyService} from "../services/registration-proxy.service";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {PasswordInputComponent} from "../../../shared/inputs/password-input.component";
 import {ResendOtpCodeTimeCounterComponent} from "../../../shared/components/resend-otp-code-time-counter.component";
@@ -31,7 +31,6 @@ import {MatSelect} from "@angular/material/select";
 import {SharedModule} from "../../../shared/shared.module";
 import {MatStep, MatStepper} from "@angular/material/stepper";
 import {AuthClientService} from "../../../core/auth/auth-client.service";
-import {GrantType} from "../../../core/api/v1/auth/models";
 
 
 @Component({
@@ -188,7 +187,7 @@ export class RegistrationOptionComponent {
         private cd: ChangeDetectorRef,
         private authClientService: AuthClientService,
         private _snackBar: MatSnackBar,
-        private registrationService: RegistrationService,
+        private registrationService: RegistrationProxyService,
     ) {
         this.form = this.fb.group({
             countryCode: new FormControl(this.countryCodes.at(0)?.value, Validators.required),

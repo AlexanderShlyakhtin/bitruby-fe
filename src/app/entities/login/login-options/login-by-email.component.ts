@@ -15,9 +15,7 @@ import {OtpCodeNotReceivedButtonComponent} from "../../../shared/components/otp-
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {MatStep, MatStepLabel, MatStepper, MatStepperNext, MatStepperPrevious} from "@angular/material/stepper";
 import {AuthClientService} from "../../../core/auth/auth-client.service";
-import {Id} from "../../../core/api/v1/users/models/id";
 import {GrantType} from "../../../core/api/v1/users/models";
-import {OtpLoginService} from "../../../core/api/v1/users/services/otp-login.service";
 
 
 @Component({
@@ -122,7 +120,6 @@ export class LoginByEmailComponent {
       private router: Router,
       private fb: FormBuilder,
       private cd: ChangeDetectorRef,
-      private otpService: OtpLoginService,
       private _snackBar: MatSnackBar,
       private authClientService: AuthClientService
   ) {

@@ -6,8 +6,8 @@ import {filter, map} from 'rxjs/operators';
 import {StrictHttpResponse} from '../../strict-http-response';
 import {RequestBuilder} from '../../request-builder';
 
-import {GenerateOtpCodeLoginResult} from '../../models/generate-otp-code-login-result';
-import {OtpCodeLogin} from '../../models/otp-code-login';
+import {OtpLogin} from '../../models/otp-login';
+import {OtpLoginResult} from '../../models/otp-login-result';
 
 export interface GenerateOtpCodeForLogin$Params {
   'x-request-id': string;
@@ -15,10 +15,10 @@ export interface GenerateOtpCodeForLogin$Params {
     /**
      * Generate OTP token for user login
      */
-    body?: OtpCodeLogin
+    body?: OtpLogin
 }
 
-export function generateOtpCodeForLogin(http: HttpClient, rootUrl: string, params: GenerateOtpCodeForLogin$Params, context?: HttpContext): Observable<StrictHttpResponse<GenerateOtpCodeLoginResult>> {
+export function generateOtpCodeForLogin(http: HttpClient, rootUrl: string, params: GenerateOtpCodeForLogin$Params, context?: HttpContext): Observable<StrictHttpResponse<OtpLoginResult>> {
   const rb = new RequestBuilder(rootUrl, generateOtpCodeForLogin.PATH, 'post');
   if (params) {
     rb.header('x-request-id', params['x-request-id'], {});
@@ -30,9 +30,9 @@ export function generateOtpCodeForLogin(http: HttpClient, rootUrl: string, param
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<GenerateOtpCodeLoginResult>;
+      return r as StrictHttpResponse<OtpLoginResult>;
     })
   );
 }
 
-generateOtpCodeForLogin.PATH = '/public/generate-otp/login';
+generateOtpCodeForLogin.PATH = '/oauth2/otp';

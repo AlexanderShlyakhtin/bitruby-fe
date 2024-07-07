@@ -7,17 +7,15 @@ import {v4 as uuidv4} from "uuid";
 import {SessionStorageService} from "../services/session-storage.service";
 import {ACCESS_TOKEN, EXPIRES_IN, REFRESH_TOKEN} from "../../app.constants";
 import {AuthService} from "../api/v1/auth/services/auth.service";
-import {OtpLoginService} from "../api/v1/users/services/otp-login.service";
-import {UsersService} from "../api/v1/users/services/users.service";
-import {OtpRestorePasswordService} from "../api/v1/users/services/otp-restore-password.service";
-import {OtpRegistrationService} from "../api/v1/users/services/otp-registration.service";
 import {Token} from "../api/v1/auth/models/token";
-import {GenerateOtpCodeLoginResult} from "../api/v1/users/models/generate-otp-code-login-result";
 import {GrantType as GrantTypeAuth} from "../api/v1/auth/models/grant-type";
 import {GrantType as GrantTypeUsers} from "../api/v1/users/models/grant-type";
 import {Base} from "../api/v1/users/models/base";
 import {RestorePasswordRequestOtpResult} from "../api/v1/users/models/restore-password-request-otp-result";
 import {IntrospectToken} from "../api/v1/auth/models/introspect-token";
+import {RestorePasswordService} from "../api/v1/users/services/restore-password.service";
+import {RegistrationService} from "../api/v1/users/services/registration.service";
+import {OtpLoginResult} from "../api/v1/auth/models/otp-login-result";
 
 @Injectable({
     providedIn: 'root'
@@ -34,10 +32,8 @@ export class AuthClientService {
     constructor(
         private authService: AuthService,
         private router: Router,
-        private otpService: OtpLoginService,
-        private usersService: UsersService,
-        private otpServiceRestore: OtpRestorePasswordService,
-        private otpServiceRegistration: OtpRegistrationService,
+        private restorePasswordService: RestorePasswordService,
+        private registrationService: RegistrationService,
         private sessionStorageService: SessionStorageService
     ) {
         this.clientId = authConfigModule.clientId;
@@ -59,7 +55,7 @@ export class AuthClientService {
                     username: userName,
                     grant_type: grantType,
                     loginId: loginId
-                }
+                }, "x-request-id": uuidv4()
             }
         ).subscribe({
             next: (value: Token) => {
@@ -74,8 +70,8 @@ export class AuthClientService {
         })
     }
 
-    generateOtpLogin(username: string, password: string, grantType: GrantTypeUsers): Observable<GenerateOtpCodeLoginResult> {
-        return this.otpService.generateOtpCodeForLogin({body: {
+    generateOtpLogin(username: string, password: string, grantType: GrantTypeUsers): Observable<OtpLoginResult> {
+        return this.authService.generateOtpCodeForLogin({body: {
                 sendTo: username,
                 password: password,
                 grant_type: grantType,
@@ -84,14 +80,14 @@ export class AuthClientService {
     }
 
     generateOtpRegistration(registrationId: string): Observable<Base> {
-        return this.otpServiceRegistration.generateOtpCodeForRegistration({body: {
+        return this.registrationService.generateOtpCodeForRegistration({body: {
                 registrationId: registrationId,
             }, "x-request-id": uuidv4()
         })
     }
 
     generateOtpRestorePassword(username: string, grantType: GrantTypeUsers): Observable<RestorePasswordRequestOtpResult> {
-        return this.otpServiceRestore.generateOtpCodeForRestoringPassword({body: {
+        return this.restorePasswordService.generateOtpCodeForRestoringPassword({body: {
                 sendTo: username,
                 grant_type: grantType,
             }, "x-request-id": uuidv4()
@@ -103,7 +99,7 @@ export class AuthClientService {
             body: {
                 refresh_token: this.sessionStorageService.getItem(REFRESH_TOKEN),
                 grant_type: GrantTypeAuth.RefreshToken
-        }
+        }, "x-request-id": uuidv4()
             })
             .subscribe({
                 next: (value: Token) => {
@@ -138,7 +134,7 @@ export class AuthClientService {
         return this.authService.introspectAccessToken({
             body: {
                 token: token
-            }
+            }, "x-request-id": uuidv4()
         })
     }
 

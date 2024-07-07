@@ -3,17 +3,17 @@ import {Observable} from "rxjs";
 import {v4 as uuidv4} from 'uuid';
 import {RegisterNewUserResult} from "../../../core/api/v1/users/models/register-new-user-result";
 import {CompleteRegistration} from "../../../core/api/v1/users/models/complete-registration";
-import {UsersService} from "../../../core/api/v1/users/services/users.service";
 import {NewUser} from "../../../core/api/v1/users/models/new-user";
 import {Base} from "../../../core/api/v1/users/models/base";
+import {RegistrationService} from "../../../core/api/v1/users/services/registration.service";
 
 @Injectable({
   providedIn: 'root'
 })
-export class RegistrationService {
+export class RegistrationProxyService {
 
   constructor(
-      private userService: UsersService
+      private userService: RegistrationService
   ) { }
 
   registerNewUser(body: NewUser): Observable<RegisterNewUserResult> {

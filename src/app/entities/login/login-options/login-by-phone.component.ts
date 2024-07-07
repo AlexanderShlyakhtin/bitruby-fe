@@ -17,7 +17,6 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {AVALIABLE_COUNTRY_CODES} from "../../../app.constants";
 import {AuthClientService} from "../../../core/auth/auth-client.service";
 import {MatStep, MatStepper} from "@angular/material/stepper";
-import {OtpLoginService} from "../../../core/api/v1/users/services/otp-login.service";
 import {GrantType} from '../../../core/api/v1/users/models/grant-type';
 
 
@@ -136,7 +135,6 @@ export class LoginByPhoneComponent {
       private fb: FormBuilder,
       private cd: ChangeDetectorRef,
       private authClientService: AuthClientService,
-      private otpService: OtpLoginService,
       private _snackBar: MatSnackBar
 
   ) {

@@ -11,19 +11,53 @@ import {StrictHttpResponse} from '../strict-http-response';
 
 import {Base} from '../models/base';
 import {
-  checkOtpCodeForRestoringPassword,
-  CheckOtpCodeForRestoringPassword$Params
-} from '../fn/otp-restore-password/check-otp-code-for-restoring-password';
+    checkOtpCodeForRestoringPassword,
+    CheckOtpCodeForRestoringPassword$Params
+} from '../fn/restore-password/check-otp-code-for-restoring-password';
 import {
-  generateOtpCodeForRestoringPassword,
-  GenerateOtpCodeForRestoringPassword$Params
-} from '../fn/otp-restore-password/generate-otp-code-for-restoring-password';
+    generateOtpCodeForRestoringPassword,
+    GenerateOtpCodeForRestoringPassword$Params
+} from '../fn/restore-password/generate-otp-code-for-restoring-password';
+import {restorePassword, RestorePassword$Params} from '../fn/restore-password/restore-password';
 import {RestorePasswordRequestOtpResult} from '../models/restore-password-request-otp-result';
 
 @Injectable({ providedIn: 'root' })
-export class OtpRestorePasswordService extends BaseService {
+export class RestorePasswordService extends BaseService {
   constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
+  }
+
+  /** Path part for operation `restorePassword()` */
+  static readonly RestorePasswordPath = '/public/restore-password';
+
+  /**
+   * Restore forgotten password.
+   *
+   * Restore forgotten password
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `restorePassword()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  restorePassword$Response(params: RestorePassword$Params, context?: HttpContext): Observable<StrictHttpResponse<Base>> {
+    return restorePassword(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Restore forgotten password.
+   *
+   * Restore forgotten password
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `restorePassword$Response()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  restorePassword(params: RestorePassword$Params, context?: HttpContext): Observable<Base> {
+    return this.restorePassword$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Base>): Base => r.body)
+    );
   }
 
   /** Path part for operation `generateOtpCodeForRestoringPassword()` */

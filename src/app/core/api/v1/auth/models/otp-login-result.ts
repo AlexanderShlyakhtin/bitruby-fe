@@ -3,6 +3,6 @@
 import {Base} from '../models/base';
 import {Id} from '../models/id';
 
-export type GenerateOtpCodeLoginResult = Base & {
+export type OtpLoginResult = Base & {
 'loginId': Id;
 };

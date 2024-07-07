@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import {Pipe, PipeTransform} from '@angular/core';
 import {VerificationStatus} from "../../core/api/v1/users/models";
 
 @Pipe({

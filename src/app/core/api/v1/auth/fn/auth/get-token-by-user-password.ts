@@ -10,6 +10,7 @@ import {GrantType} from '../../models/grant-type';
 import {Token} from '../../models/token';
 
 export interface GetTokenByUserPassword$Params {
+  'x-request-id': string;
   grant_type?: GrantType;
   refresh_token?: string;
   
@@ -29,9 +30,10 @@ export interface GetTokenByUserPassword$Params {
 })
 }
 
-export function getTokenByUserPassword(http: HttpClient, rootUrl: string, params?: GetTokenByUserPassword$Params, context?: HttpContext): Observable<StrictHttpResponse<Token>> {
+export function getTokenByUserPassword(http: HttpClient, rootUrl: string, params: GetTokenByUserPassword$Params, context?: HttpContext): Observable<StrictHttpResponse<Token>> {
   const rb = new RequestBuilder(rootUrl, getTokenByUserPassword.PATH, 'post');
   if (params) {
+    rb.header('x-request-id', params['x-request-id'], {});
     rb.query('grant_type', params.grant_type, {});
     rb.query('refresh_token', params.refresh_token, {});
     rb.body(params.body, 'multipart/form-data');

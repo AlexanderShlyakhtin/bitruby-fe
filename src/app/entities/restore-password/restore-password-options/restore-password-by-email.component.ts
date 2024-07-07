@@ -29,8 +29,7 @@ import {AuthClientService} from "../../../core/auth/auth-client.service";
 import {v4 as uuidv4} from "uuid";
 import {Router} from "@angular/router";
 import {Base, GrantType} from '../../../core/api/v1/users/models';
-import {UsersService} from "../../../core/api/v1/users/services/users.service";
-import {OtpRestorePasswordService} from "../../../core/api/v1/users/services/otp-restore-password.service";
+import {RestorePasswordService} from "../../../core/api/v1/users/services/restore-password.service";
 
 @Component({
     selector: 'bitruby-restore-password-by-email',
@@ -152,8 +151,7 @@ export class RestorePasswordByEmailComponent {
     constructor(
         private fb: FormBuilder,
         private authClientService: AuthClientService,
-        private usersService: UsersService,
-        private restorePasswordService: OtpRestorePasswordService,
+        private restorePasswordService: RestorePasswordService,
         private router: Router
     ) {
         this.form = this.fb.group({
@@ -210,7 +208,7 @@ export class RestorePasswordByEmailComponent {
 
     confirmNewPassword(): void {
         const arrayOtp = this.form.controls['otp'] as FormArray<FormControl>
-        this.usersService.restorePassword({
+        this.restorePasswordService.restorePassword({
             body: {
                 restorePasswordId: this.restorePasswordId!,
                 otp: arrayOtp.controls.map(control => control.value).join(''),

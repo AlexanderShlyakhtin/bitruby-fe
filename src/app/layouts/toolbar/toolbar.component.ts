@@ -4,7 +4,7 @@ import {MatButton} from "@angular/material/button";
 import {Router} from "@angular/router";
 import {BigRedButtonComponent} from "../../shared/buttons/big-red-button.component";
 import {AuthClientService} from "../../core/auth/auth-client.service";
-import {Observable, Subscription} from "rxjs";
+import {Subscription} from "rxjs";
 import {NgIf} from "@angular/common";
 
 @Component({

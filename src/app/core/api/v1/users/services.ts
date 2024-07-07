@@ -1,4 +1,3 @@
-export { UsersService } from './services/users.service';
-export { OtpLoginService } from './services/otp-login.service';
-export { OtpRegistrationService } from './services/otp-registration.service';
-export { OtpRestorePasswordService } from './services/otp-restore-password.service';
+export { RegistrationService } from './services/registration.service';
+export { RestorePasswordService } from './services/restore-password.service';
+export { VerificationService } from './services/verification.service';

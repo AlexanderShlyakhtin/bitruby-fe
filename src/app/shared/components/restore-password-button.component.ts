@@ -1,7 +1,6 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import {Component} from "@angular/core";
 import {MatButton} from "@angular/material/button";
 import {NgIf} from "@angular/common";
-import {interval, Subscription} from "rxjs";
 import {Router} from "@angular/router";
 
 

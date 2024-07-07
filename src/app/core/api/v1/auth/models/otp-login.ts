@@ -2,6 +2,6 @@
 /* eslint-disable */
 import {OtpCode} from '../models/otp-code';
 
-export type OtpCodeLogin = OtpCode & {
+export type OtpLogin = OtpCode & {
 'password': string;
 };

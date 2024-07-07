@@ -3,14 +3,12 @@
 export { Base } from './models/base';
 export { CompleteRegistration } from './models/complete-registration';
 export { Error } from './models/error';
-export { GenerateOtpCodeLoginResult } from './models/generate-otp-code-login-result';
 export { GenerateOtpCodeRegistration } from './models/generate-otp-code-registration';
 export { GrantType } from './models/grant-type';
 export { Id } from './models/id';
 export { NewUser } from './models/new-user';
 export { Otp } from './models/otp';
 export { OtpCode } from './models/otp-code';
-export { OtpCodeLogin } from './models/otp-code-login';
 export { OtpCodeRestorePassword } from './models/otp-code-restore-password';
 export { RegisterNewUserResult } from './models/register-new-user-result';
 export { RestorePassword } from './models/restore-password';

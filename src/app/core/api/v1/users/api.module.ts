@@ -4,10 +4,9 @@ import {ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ApiConfiguration, ApiConfigurationParams} from './api-configuration';
 
-import {UsersService} from './services/users.service';
-import {OtpLoginService} from './services/otp-login.service';
-import {OtpRegistrationService} from './services/otp-registration.service';
-import {OtpRestorePasswordService} from './services/otp-restore-password.service';
+import {RegistrationService} from './services/registration.service';
+import {RestorePasswordService} from './services/restore-password.service';
+import {VerificationService} from './services/verification.service';
 
 /**
  * Module that provides all services and configuration.
@@ -17,10 +16,9 @@ import {OtpRestorePasswordService} from './services/otp-restore-password.service
   exports: [],
   declarations: [],
   providers: [
-    UsersService,
-    OtpLoginService,
-    OtpRegistrationService,
-    OtpRestorePasswordService,
+    RegistrationService,
+    RestorePasswordService,
+    VerificationService,
     ApiConfiguration
   ],
 })

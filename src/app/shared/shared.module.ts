@@ -3,7 +3,6 @@ import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {PhoneInputMaskDirective} from "./directives/phone-input-mask-directive";
 import {PipeModule} from "./pipe/pipe.module";
 import {LogoComponent} from "./logo/logo.components";
-import {StatusTranslatePipe} from "./pipe/status-translate-pipe";
 
 
 @NgModule({
