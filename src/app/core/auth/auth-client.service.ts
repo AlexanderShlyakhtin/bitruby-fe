@@ -9,6 +9,7 @@ import {ACCESS_TOKEN, EXPIRES_IN, REFRESH_TOKEN} from "../../app.constants";
 import {AuthService} from "../api/v1/auth/services/auth.service";
 import {Token} from "../api/v1/auth/models/token";
 import {GrantType as GrantTypeAuth} from "../api/v1/auth/models/grant-type";
+import {Error} from "../api/v1/auth/models/error";
 import {GrantType as GrantTypeUsers} from "../api/v1/users/models/grant-type";
 import {Base} from "../api/v1/users/models/base";
 import {RestorePasswordRequestOtpResult} from "../api/v1/users/models/restore-password-request-otp-result";
@@ -16,6 +17,7 @@ import {IntrospectToken} from "../api/v1/auth/models/introspect-token";
 import {RestorePasswordService} from "../api/v1/users/services/restore-password.service";
 import {RegistrationService} from "../api/v1/users/services/registration.service";
 import {OtpLoginResult} from "../api/v1/auth/models/otp-login-result";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Injectable({
     providedIn: 'root'
@@ -34,7 +36,8 @@ export class AuthClientService {
         private router: Router,
         private restorePasswordService: RestorePasswordService,
         private registrationService: RegistrationService,
-        private sessionStorageService: SessionStorageService
+        private sessionStorageService: SessionStorageService,
+        private _snackBar: MatSnackBar
     ) {
         this.clientId = authConfigModule.clientId;
         this.clientSecret = authConfigModule.clientSecret;
@@ -61,7 +64,8 @@ export class AuthClientService {
             next: (value: Token) => {
                 this.setToken(value);
             },
-            error: (err: Error) => {
+            error: err => {
+                this._snackBar.open(err['error'].message, 'Close', {verticalPosition: 'top', direction: 'rtl', duration: 3000 })
                 console.error("Error occurs while trying authorize the user: ", err);
             },
             complete: () => {

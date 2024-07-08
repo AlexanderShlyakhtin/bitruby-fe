@@ -239,7 +239,7 @@ export class RegistrationOptionComponent {
                 },
                 error: err => {
                     console.error(err);
-                    this._snackBar.open(err.message, 'Close', {verticalPosition: 'top', direction: 'rtl'})
+                    this._snackBar.open(err['error'].message, 'Close', {verticalPosition: 'top', direction: 'rtl', duration: 3000 })
                 }
             });
     }

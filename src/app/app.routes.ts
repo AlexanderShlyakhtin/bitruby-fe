@@ -1,5 +1,6 @@
 import {Routes} from '@angular/router';
 import {userAccountStatusGuard} from "./core/guards/user-account-status.guard";
+import {userAccountLevelGuard} from "./core/guards/user-account-level.guard";
 
 export const routes: Routes = [
     {
@@ -22,6 +23,11 @@ export const routes: Routes = [
         path: 'account',
         loadChildren: () => import('./entities/account/account.module').then(m => m.AccountModule),
         canActivate: [ userAccountStatusGuard ]
+    },
+    {
+        path: 'welcome',
+        loadChildren: () => import('./entities/welcome/welcome.module').then(m => m.WelcomeModule),
+        canActivate: [ userAccountLevelGuard ]
     },
     {
         path: 'info',
